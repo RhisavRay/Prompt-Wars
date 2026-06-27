@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { PageContainer } from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Sparkles, TrendingUp, Shield } from 'lucide-react';
-import { APP_CONFIG } from '@/config/app';
 
 export default function Home() {
   // Stagger animation container config
@@ -21,13 +20,13 @@ export default function Home() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 15 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.8, 
-        ease: [0.16, 1, 0.3, 1] 
-      } 
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1]
+      }
     },
   };
 
@@ -69,14 +68,14 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4"
         >
-          <Button 
+          <Button
             className="w-full sm:w-auto bg-stone-900 text-stone-100 hover:bg-stone-700 px-6 py-4.5 rounded-full font-medium transition-all shadow-sm flex items-center justify-center gap-2 cursor-not-allowed opacity-90"
             disabled
           >
             Enter Reflect Space
             <span className="text-xs py-0.5 px-2 bg-stone-750 rounded-full text-stone-300">Soon</span>
           </Button>
-          
+
           <a
             href="https://github.com/RhisavRay/Prompt-Wars"
             target="_blank"
