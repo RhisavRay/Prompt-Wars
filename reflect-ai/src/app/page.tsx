@@ -25,7 +25,7 @@ export default function Home() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.16, 1, 0.3, 1]
+        ease: "easeOut"
       }
     },
   };
