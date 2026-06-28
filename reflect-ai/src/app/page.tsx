@@ -1,12 +1,25 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, type Variants } from 'framer-motion';
 import { PageContainer } from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Sparkles, TrendingUp, Shield } from 'lucide-react';
+import { useAuth } from '@/contexts/auth';
 
 export default function Home() {
+  const { status } = useAuth();
+  const router = useRouter();
+
+  function handleEnter() {
+    if (status === 'authenticated') {
+      router.push('/app');
+    } else {
+      router.push('/login');
+    }
+  }
+
   // Stagger animation container config
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -69,11 +82,10 @@ export default function Home() {
           className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4"
         >
           <Button
-            className="w-full sm:w-auto bg-stone-900 text-stone-100 hover:bg-stone-700 px-6 py-4.5 rounded-full font-medium transition-all shadow-sm flex items-center justify-center gap-2 cursor-not-allowed opacity-90"
-            disabled
+            onClick={handleEnter}
+            className="w-full sm:w-auto bg-stone-900 text-stone-100 hover:bg-stone-700 px-6 py-4.5 rounded-full font-medium transition-all shadow-sm flex items-center justify-center gap-2"
           >
             Enter Reflect Space
-            <span className="text-xs py-0.5 px-2 bg-stone-750 rounded-full text-stone-300">Soon</span>
           </Button>
 
           <a
