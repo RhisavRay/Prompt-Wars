@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { PageContainer } from '@/components/layout/page-container';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Sparkles, TrendingUp, Shield } from 'lucide-react';
 
 export default function Home() {
   // Stagger animation container config
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -18,7 +18,7 @@ export default function Home() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     show: {
       opacity: 1,
@@ -37,7 +37,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: "easeOut" as const }}
           className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 text-xs font-semibold tracking-wide uppercase mb-6"
         >
           <Sparkles className="h-3 w-3" />
@@ -47,7 +47,7 @@ export default function Home() {
         <motion.h1
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" as const }}
           className="text-4xl md:text-5xl font-semibold tracking-tight text-stone-900 mb-6 leading-[1.15]"
         >
           Your space for <span className="text-emerald-600 bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">mindful clarity</span>.
@@ -56,7 +56,7 @@ export default function Home() {
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" as const }}
           className="text-base md:text-lg text-stone-500 leading-relaxed font-normal"
         >
           Reflect is a private, intelligent journaling workspace designed to help you process your thoughts, track your moods, and unlock mental wellness insights.
@@ -65,7 +65,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" as const }}
           className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4"
         >
           <Button
