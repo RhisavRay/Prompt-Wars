@@ -6,7 +6,7 @@ This document serves as the architectural reference for project **Reflect** (tem
 
 ## 1. Chosen Tech Stack
 
-*   **Framework**: Next.js 15 (App Router) — Leverages React Server Components (RSC) for performance, streaming, server actions, and search engine optimization.
+*   **Framework**: Next.js 16 (App Router) — Leverages React Server Components (RSC) for performance, streaming, server actions, and search engine optimization.
 *   **Language**: TypeScript — Strict type checking with no `any` parameters.
 *   **Styling**: Tailwind CSS v4 — Inline responsive style utility classes for rapid UI prototyping.
 *   **UI Library**: shadcn/ui — Reusable unstyled components built with Radix UI and Tailwind CSS.
