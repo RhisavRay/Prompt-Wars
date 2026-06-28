@@ -83,7 +83,7 @@ export default function Home() {
         >
           <Button
             onClick={handleEnter}
-            className="w-full sm:w-auto bg-stone-900 text-stone-100 hover:bg-stone-700 px-6 py-4.5 rounded-full font-medium transition-all shadow-sm flex items-center justify-center gap-2"
+            className="w-full sm:w-auto cursor-pointer bg-stone-900 text-stone-100 hover:bg-stone-700 px-6 py-4.5 rounded-full font-medium transition-all shadow-sm flex items-center justify-center gap-2"
           >
             Enter Reflect Space
           </Button>
@@ -92,7 +92,7 @@ export default function Home() {
             href="https://github.com/RhisavRay/Prompt-Wars"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto text-stone-500 hover:text-stone-700 font-medium text-sm transition-colors py-2 px-4 rounded-full border border-stone-200 hover:bg-stone-50 text-center"
+            className="w-full sm:w-auto cursor-pointer text-stone-500 hover:text-stone-700 font-medium text-sm transition-colors py-2 px-4 rounded-full border border-stone-200 hover:bg-stone-50 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           >
             Explore Codebase
           </a>

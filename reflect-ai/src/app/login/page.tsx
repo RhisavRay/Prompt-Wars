@@ -84,7 +84,7 @@ export default function LoginPage() {
           <button
             id="google-sign-in-btn"
             onClick={signInWithGoogle}
-            className="group flex w-full items-center justify-center gap-3 rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 shadow-xs transition-all duration-150 hover:border-stone-300 hover:bg-stone-50 hover:shadow-sm active:scale-[0.98]"
+            className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-700 shadow-xs transition-all duration-150 hover:border-stone-300 hover:bg-stone-50 hover:shadow-sm active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           >
             {/* Google colour icon */}
             <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">

@@ -19,7 +19,7 @@ export function Header() {
         {/* Logo */}
         <Link
           href="/"
-          className="group flex items-center space-x-2 transition-opacity hover:opacity-90"
+          className="group flex cursor-pointer items-center space-x-2 transition-opacity hover:opacity-90"
         >
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 transition-transform group-hover:scale-105">
             <svg
@@ -50,7 +50,7 @@ export function Header() {
           {status === 'unauthenticated' && (
             <Link
               href="/login"
-              className="rounded-full border border-stone-200 px-4 py-1.5 text-sm font-medium text-stone-600 transition-all hover:border-stone-300 hover:bg-stone-50 hover:text-stone-800"
+              className="cursor-pointer rounded-full border border-stone-200 px-4 py-1.5 text-sm font-medium text-stone-600 transition-all hover:border-stone-300 hover:bg-stone-50 hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
             >
               Sign in
             </Link>
@@ -59,7 +59,7 @@ export function Header() {
           {status === 'authenticated' && user && (
             <div className="flex items-center gap-3">
               {/* Avatar */}
-              <Link href="/app" className="group flex items-center gap-2">
+              <Link href="/app" className="group flex cursor-pointer items-center gap-2">
                 {user.photoURL ? (
                   <div className="h-8 w-8 overflow-hidden rounded-full border border-stone-200 transition-opacity group-hover:opacity-80">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -81,7 +81,7 @@ export function Header() {
               <button
                 id="header-sign-out-btn"
                 onClick={signOut}
-                className="text-xs font-medium text-stone-400 transition-colors hover:text-stone-600"
+                className="cursor-pointer text-xs font-medium text-stone-400 transition-colors hover:text-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:rounded"
               >
                 Sign out
               </button>

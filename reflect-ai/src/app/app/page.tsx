@@ -60,7 +60,7 @@ export default function AppPage() {
           <button
             id="sign-out-btn"
             onClick={signOut}
-            className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-600 shadow-xs transition-all hover:border-stone-300 hover:bg-stone-50 hover:text-stone-800 active:scale-[0.98]"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-600 shadow-xs transition-all hover:border-stone-300 hover:bg-stone-50 hover:text-stone-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           >
             <LogOut className="h-4 w-4" />
             Sign out
