@@ -1,72 +1,190 @@
 'use client';
 
 /**
- * /app — Protected Application Area (placeholder)
+ * /app — Journal Dashboard
  *
- * This page is intentionally minimal. Dashboard functionality
- * will be implemented in a future iteration.
+ * Authenticated users see their journal entries here.
+ * Supports full CRUD via the Firestore service.
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from '@/contexts/auth';
+import React, { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, RefreshCw, AlertCircle } from 'lucide-react';
 import { PageContainer } from '@/components/layout/page-container';
-import { LogOut, Sparkles } from 'lucide-react';
+import { useAuth } from '@/contexts/auth';
+import { useJournals } from '@/hooks/use-journals';
+import { JournalCard } from '@/components/journal/journal-card';
+import { JournalSkeletonGrid } from '@/components/journal/journal-skeleton';
+import { EmptyState } from '@/components/journal/empty-state';
+import { JournalFormModal } from '@/components/journal/journal-form-modal';
+import type { Journal, CreateJournalInput, UpdateJournalInput } from '@/types/journal';
 
 export default function AppPage() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
+  const { journals, loading, error, creating, mutating, refresh, create, update, remove, clearError } =
+    useJournals(user?.uid);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingJournal, setEditingJournal] = useState<Journal | null>(null);
+
+  // ── Handlers ────────────────────────────────────────────────────────────────
+
+  const openCreate = useCallback(() => {
+    setEditingJournal(null);
+    setModalOpen(true);
+  }, []);
+
+  const openEdit = useCallback((journal: Journal) => {
+    setEditingJournal(journal);
+    setModalOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    if (creating || mutating) return; // don't allow close while saving
+    setModalOpen(false);
+    setEditingJournal(null);
+  }, [creating, mutating]);
+
+  const handleFormSubmit = useCallback(
+    async (values: CreateJournalInput | UpdateJournalInput) => {
+      if (editingJournal) {
+        const result = await update(editingJournal.id, values as UpdateJournalInput);
+        if (result) setModalOpen(false);
+      } else {
+        const result = await create(values as CreateJournalInput);
+        if (result) setModalOpen(false);
+      }
+      setEditingJournal(null);
+    },
+    [editingJournal, create, update]
+  );
+
+  const handleDelete = useCallback(
+    async (journalId: string) => {
+      await remove(journalId);
+    },
+    [remove]
+  );
+
+  // ── Busy state for the modal ─────────────────────────────────────────────
+  const isBusy = creating || (editingJournal ? mutating === editingJournal.id : false);
+
+  // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <PageContainer className="flex flex-1 flex-col items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="w-full max-w-lg text-center"
-      >
-        {/* Welcome badge */}
-        <div className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
-          <Sparkles className="h-3 w-3" />
-          Authenticated
+    <>
+      <PageContainer>
+        {/* ── Page header ─────────────────────────────────────────────────── */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
+              My Journals
+            </h1>
+            <p className="mt-1 text-sm text-stone-500">
+              {loading
+                ? 'Loading your entries…'
+                : journals.length === 0
+                  ? 'No entries yet'
+                  : `${journals.length} ${journals.length === 1 ? 'entry' : 'entries'}`}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Refresh */}
+            <button
+              id="refresh-journals-btn"
+              onClick={refresh}
+              disabled={loading}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-sm font-medium text-stone-600 transition-all hover:bg-stone-50 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+              aria-label="Refresh journal list"
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+
+            {/* New journal CTA */}
+            <button
+              id="new-journal-btn"
+              onClick={openCreate}
+              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-stone-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-stone-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+              aria-label="Create new journal entry"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              New Journal
+            </button>
+          </div>
         </div>
 
-        {/* User avatar */}
-        {user?.photoURL && (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.4 }}
-            className="mx-auto mb-5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-emerald-100 shadow-sm"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={user.photoURL}
-              alt={user.displayName ?? 'User avatar'}
-              className="h-full w-full object-cover"
-              referrerPolicy="no-referrer"
-            />
-          </motion.div>
+        {/* ── Error banner ─────────────────────────────────────────────────── */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-6 overflow-hidden"
+            >
+              <div
+                role="alert"
+                className="flex items-start gap-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5 text-sm text-red-700"
+              >
+                <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                <span className="flex-1">{error}</span>
+                <button
+                  onClick={clearError}
+                  className="cursor-pointer text-red-400 hover:text-red-600 focus-visible:outline-none"
+                  aria-label="Dismiss error"
+                >
+                  ✕
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Loading skeletons ─────────────────────────────────────────────── */}
+        {loading && <JournalSkeletonGrid count={6} />}
+
+        {/* ── Empty state ───────────────────────────────────────────────────── */}
+        {!loading && journals.length === 0 && !error && (
+          <EmptyState onNewJournal={openCreate} />
         )}
 
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
-          Welcome back{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}!
-        </h1>
-        <p className="mt-2 text-sm text-stone-500">
-          Your Reflect dashboard is coming soon. Authentication is fully wired.
-        </p>
-
-        {/* Sign out */}
-        <div className="mt-8">
-          <button
-            id="sign-out-btn"
-            onClick={signOut}
-            className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-600 shadow-xs transition-all hover:border-stone-300 hover:bg-stone-50 hover:text-stone-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+        {/* ── Journal grid ──────────────────────────────────────────────────── */}
+        {!loading && journals.length > 0 && (
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: {},
+              show: { transition: { staggerChildren: 0.06 } },
+            }}
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label="Journal entries"
           >
-            <LogOut className="h-4 w-4" />
-            Sign out
-          </button>
-        </div>
-      </motion.div>
-    </PageContainer>
+            <AnimatePresence mode="popLayout">
+              {journals.map((journal) => (
+                <JournalCard
+                  key={journal.id}
+                  journal={journal}
+                  isMutating={mutating === journal.id}
+                  onEdit={openEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </PageContainer>
+
+      {/* ── Create / Edit Modal ───────────────────────────────────────────── */}
+      <JournalFormModal
+        isOpen={modalOpen}
+        isBusy={!!isBusy}
+        editingJournal={editingJournal}
+        onClose={closeModal}
+        onSubmit={handleFormSubmit}
+      />
+    </>
   );
 }
