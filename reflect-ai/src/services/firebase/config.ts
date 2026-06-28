@@ -17,7 +17,7 @@ export const firebaseConfig = {
 // Validate that critical config values are present in development
 if (process.env.NODE_ENV === 'development') {
   const missingKeys = Object.entries(firebaseConfig)
-    .filter(([_, value]) => !value)
+    .filter((entry) => !entry[1])
     .map(([key]) => key);
 
   if (missingKeys.length > 0) {
