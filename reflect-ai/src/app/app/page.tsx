@@ -7,9 +7,9 @@
  * Supports full CRUD via the Firestore service.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, RefreshCw, AlertCircle } from 'lucide-react';
+import { Plus, RefreshCw, AlertCircle, Search } from 'lucide-react';
 import { PageContainer } from '@/components/layout/page-container';
 import { useAuth } from '@/contexts/auth';
 import { useJournals } from '@/hooks/use-journals';
@@ -26,6 +26,20 @@ export default function AppPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingJournal, setEditingJournal] = useState<Journal | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // ── Search filtering ────────────────────────────────────────────────────────
+  const filteredJournals = useMemo(() => {
+    const trimmed = searchQuery.trim().toLowerCase();
+    if (!trimmed) return journals;
+    return journals.filter(
+      (journal) =>
+        journal.title.toLowerCase().includes(trimmed) ||
+        journal.content.toLowerCase().includes(trimmed)
+    );
+  }, [journals, searchQuery]);
+
+  const isSearching = searchQuery.trim() !== '';
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 
@@ -85,7 +99,11 @@ export default function AppPage() {
                 ? 'Loading your entries…'
                 : journals.length === 0
                   ? 'No entries yet'
-                  : `${journals.length} ${journals.length === 1 ? 'entry' : 'entries'}`}
+                  : isSearching
+                    ? `${filteredJournals.length} of ${journals.length} ${
+                        journals.length === 1 ? 'entry' : 'entries'
+                      }`
+                    : `${journals.length} ${journals.length === 1 ? 'entry' : 'entries'}`}
             </p>
           </div>
 
@@ -142,16 +160,49 @@ export default function AppPage() {
           )}
         </AnimatePresence>
 
+        {/* ── Search Bar ───────────────────────────────────────────────────── */}
+        {!loading && journals.length > 0 && (
+          <div className="relative mb-6">
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+            <input
+              type="text"
+              placeholder="Search journals by title or content..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-xl border border-stone-200 bg-stone-50 py-2.5 pl-10 pr-4 text-sm text-stone-900 placeholder:text-stone-400 transition-colors focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400/30"
+              aria-label="Search journals"
+            />
+          </div>
+        )}
+
         {/* ── Loading skeletons ─────────────────────────────────────────────── */}
         {loading && <JournalSkeletonGrid count={6} />}
 
-        {/* ── Empty state ───────────────────────────────────────────────────── */}
+        {/* ── Empty state (No journals at all) ──────────────────────────────── */}
         {!loading && journals.length === 0 && !error && (
           <EmptyState onNewJournal={openCreate} />
         )}
 
+        {/* ── Empty search state (No matching journals) ─────────────────────── */}
+        {!loading && journals.length > 0 && filteredJournals.length === 0 && !error && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-16 text-center"
+          >
+            <p className="text-sm text-stone-500">No journals match your search.</p>
+            <button
+              onClick={() => setSearchQuery('')}
+              className="mt-3 cursor-pointer text-xs font-medium text-emerald-600 hover:text-emerald-700 focus-visible:outline-none focus-visible:underline"
+              aria-label="Clear search"
+            >
+              Clear search query
+            </button>
+          </motion.div>
+        )}
+
         {/* ── Journal grid ──────────────────────────────────────────────────── */}
-        {!loading && journals.length > 0 && (
+        {!loading && filteredJournals.length > 0 && (
           <motion.div
             initial="hidden"
             animate="show"
@@ -163,7 +214,7 @@ export default function AppPage() {
             aria-label="Journal entries"
           >
             <AnimatePresence mode="popLayout">
-              {journals.map((journal) => (
+              {filteredJournals.map((journal) => (
                 <JournalCard
                   key={journal.id}
                   journal={journal}

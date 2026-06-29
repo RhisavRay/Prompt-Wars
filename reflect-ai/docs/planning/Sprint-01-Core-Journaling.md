@@ -30,7 +30,7 @@ The application should feel polished, intuitive, responsive, and enjoyable to us
 
 ## Feature 1 — Journal Search
 
-**Status:** Not Started
+**Status:** Complete ✅
 
 Allow users to search journal entries by:
 
