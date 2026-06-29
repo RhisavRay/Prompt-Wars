@@ -8,6 +8,7 @@
  */
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import type { Journal } from '@/types/journal';
@@ -50,16 +51,22 @@ interface JournalCardProps {
 }
 
 export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCardProps) {
+  const router = useRouter();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const moodStyle = getMoodStyle(journal.mood);
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (confirmDelete) {
       onDelete(journal.id);
       setConfirmDelete(false);
     } else {
       setConfirmDelete(true);
     }
+  };
+
+  const handleCardClick = () => {
+    router.push(`/app/journals/${journal.id}`);
   };
 
   return (
@@ -69,7 +76,8 @@ export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCa
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative flex flex-col rounded-2xl border border-stone-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+      onClick={handleCardClick}
+      className="group relative flex cursor-pointer flex-col rounded-2xl border border-stone-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
       aria-label={`Journal entry: ${journal.title}`}
     >
       {/* Mood badge */}
@@ -114,7 +122,10 @@ export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCa
           {/* Edit */}
           <button
             id={`edit-journal-${journal.id}`}
-            onClick={() => onEdit(journal)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(journal);
+            }}
             disabled={isMutating}
             className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-600 transition-all hover:bg-stone-50 hover:text-stone-900 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
             aria-label={`Edit "${journal.title}"`}
@@ -143,7 +154,10 @@ export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCa
                   Confirm
                 </button>
                 <button
-                  onClick={() => setConfirmDelete(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmDelete(false);
+                  }}
                   className="cursor-pointer rounded-lg px-2 py-1.5 text-xs text-stone-400 hover:text-stone-600 focus-visible:outline-none"
                   aria-label="Cancel delete"
                 >

@@ -87,7 +87,33 @@ export function JournalFormModal({
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
+  // Watch fields to detect changes dynamically
+  const watchedTitle = useWatch({ control, name: 'title' }) || '';
+  const watchedContent = useWatch({ control, name: 'content' }) || '';
+
+  const hasMeaningfulChanges = React.useMemo(() => {
+    if (!editingJournal) return true; // Always allow save in create mode
+    const originalTitle = (editingJournal.title || '').trim();
+    const originalContent = (editingJournal.content || '').trim();
+    const originalMood = (editingJournal.mood || '').trim();
+
+    const currentTitle = (watchedTitle || '').trim();
+    const currentContent = (watchedContent || '').trim();
+    const currentMood = (selectedMood || '').trim();
+
+    return (
+      originalTitle !== currentTitle ||
+      originalContent !== currentContent ||
+      originalMood !== currentMood
+    );
+  }, [editingJournal, watchedTitle, watchedContent, selectedMood]);
+
   const handleFormSubmit = (values: FormValues) => {
+    if (isEditing && !hasMeaningfulChanges) {
+      // Exit edit mode immediately as though it completed successfully
+      onClose();
+      return;
+    }
     onSubmit(values);
   };
 
@@ -224,8 +250,8 @@ export function JournalFormModal({
                 <button
                   id="submit-journal-btn"
                   type="submit"
-                  disabled={isBusy}
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-stone-700 active:scale-[0.98] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+                  disabled={isBusy || (isEditing && !hasMeaningfulChanges)}
+                  className="inline-flex enabled:cursor-pointer items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-medium text-white transition-all enabled:hover:bg-stone-700 enabled:active:scale-[0.98] disabled:cursor-default disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                 >
                   {isBusy && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
                   {isEditing ? 'Save changes' : 'Save entry'}

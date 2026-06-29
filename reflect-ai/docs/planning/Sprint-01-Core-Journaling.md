@@ -1,7 +1,7 @@
 # Sprint 01 — Complete the Core Journaling Experience
 
 **Sprint:** 01  
-**Status:** Planned  
+**Status:** Completed ✅  
 **Priority:** High  
 **Estimated Duration:** 1–2 Weeks  
 **Last Updated:** 28 June 2026
@@ -73,7 +73,7 @@ Filtering should work seamlessly alongside search.
 
 ## Feature 3 — Journal Detail View
 
-**Status:** Not Started
+**Status:** Complete ✅
 
 Selecting a journal should open a dedicated reading page.
 
@@ -88,7 +88,7 @@ The reading experience should prioritize:
 
 ## Feature 4 — Improved Writing Experience
 
-**Status:** Not Started
+**Status:** Complete ✅
 
 Enhancements include:
 
@@ -192,8 +192,8 @@ Every feature must:
 |----------------------|--------|
 | Search               |   ✅  |
 | Filters              |   ✅  |
-| Journal Detail       |   ⬜  |
-| Writing Improvements |   ⬜  |
+| Journal Detail       |   ✅  |
+| Writing Improvements |   ✅  |
 | Empty State          |   ✅  |
 | Loading Experience   |   ✅  |
 
