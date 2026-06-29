@@ -53,7 +53,7 @@ Search should be:
 
 ## Feature 2 — Journal Filters
 
-**Status:** Not Started
+**Status:** Complete ✅
 
 Allow users to filter journals using:
 
@@ -185,7 +185,7 @@ Every feature must:
 | Feature              | Status |
 |----------------------|--------|
 | Search               |   ✅  |
-| Filters              |   ⬜  |
+| Filters              |   ✅  |
 | Journal Detail       |   ⬜  |
 | Writing Improvements |   ⬜  |
 | Empty State          |   ✅  |
