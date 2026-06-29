@@ -26,6 +26,12 @@ The application should feel polished, intuitive, responsive, and enjoyable to us
 
 ---
 
+# Product Question
+
+> Can users enjoy writing?
+
+---
+
 # Features
 
 ## Feature 1 — Journal Search
