@@ -81,7 +81,7 @@ export default function JournalDetailPage() {
   const [showFloatingBack, setShowFloatingBack] = useState(false);
   const [showFloatingActions, setShowFloatingActions] = useState(false);
 
-  const backButtonRef = useRef<HTMLDivElement | null>(null);
+  const backButtonRef = useRef<HTMLButtonElement | null>(null);
   const actionsContainerRef = useRef<HTMLDivElement | null>(null);
 
   // ── Fetch journal on mount ────────────────────────────────────────────────
@@ -273,8 +273,9 @@ export default function JournalDetailPage() {
           aria-label={`Journal entry: ${journal.title}`}
         >
           {/* ── Inline Back navigation ─────────────────────────────────────── */}
-          <div ref={backButtonRef} className="mb-10">
+          <div className="mb-10">
             <button
+              ref={backButtonRef}
               id="back-to-dashboard-btn"
               onClick={() => router.push('/app')}
               className="cursor-pointer inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 transition-colors hover:text-stone-800 focus-visible:outline-none focus-visible:underline"
@@ -423,7 +424,7 @@ export default function JournalDetailPage() {
         </motion.article>
       </PageContainer>
 
-      {/* ── 1. Floating Back Bubble (Bottom-Left) ─────────────────────────── */}
+      {/* ── 1. Floating Back Bubble (Top-Left) ─────────────────────────── */}
       <AnimatePresence>
         {showFloatingBack && (
           <motion.button
@@ -431,7 +432,7 @@ export default function JournalDetailPage() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => router.push('/app')}
-            className="fixed bottom-6 left-6 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-stone-900 text-white shadow-lg transition-all hover:bg-stone-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+            className="fixed top-20 left-6 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:bg-stone-50 hover:text-stone-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
             aria-label="Back to journals list"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -439,19 +440,19 @@ export default function JournalDetailPage() {
         )}
       </AnimatePresence>
 
-      {/* ── 2. Floating Actions Bubbles (Bottom-Right) ────────────────────── */}
+      {/* ── 2. Floating Actions Bubbles (Bottom-Left) ────────────────────── */}
       <AnimatePresence>
         {showFloatingActions && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 z-40 flex items-center gap-3"
+            className="fixed bottom-6 left-6 z-40 flex items-center gap-3"
           >
             {/* Edit Bubble */}
             <button
               onClick={() => setModalOpen(true)}
-              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-stone-900 text-white shadow-lg transition-all hover:bg-stone-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:bg-stone-50 hover:text-stone-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
               aria-label="Edit journal entry"
             >
               <Pencil className="h-5 w-5" />
@@ -460,7 +461,7 @@ export default function JournalDetailPage() {
             {/* Delete Bubble */}
             <button
               onClick={handleDeleteFloatingClick}
-              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-red-500 text-white shadow-lg transition-all hover:bg-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
+              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
               aria-label="Delete journal entry"
             >
               <Trash2 className="h-5 w-5" />
@@ -480,4 +481,3 @@ export default function JournalDetailPage() {
     </>
   );
 }
-
