@@ -109,8 +109,8 @@ export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCa
           {formatDate(journal.createdAt)}
         </time>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+        {/* Actions — always visible on mobile, hover-reveal on desktop */}
+        <div className="flex items-center gap-1.5 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-within:opacity-100">
           {/* Edit */}
           <button
             id={`edit-journal-${journal.id}`}
