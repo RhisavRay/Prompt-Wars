@@ -43,6 +43,12 @@ Search should be:
 - Case-insensitive
 - Responsive
 
+## Lessons Learned
+
+- Keeping search as a UI concern instead of placing it in the data hook preserved a clean separation of responsibilities.
+- Client-side search is sufficient for the current scale of Reflect and avoids unnecessary architectural complexity.
+- Manual UX testing uncovered no issues, reinforcing the value of small, incremental feature delivery.
+
 ---
 
 ## Feature 2 — Journal Filters
@@ -176,14 +182,14 @@ Every feature must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Search | ⬜ |
-| Filters | ⬜ |
-| Journal Detail | ⬜ |
-| Writing Improvements | ⬜ |
-| Empty State | ✅ |
-| Loading Experience | ✅ |
+| Feature              | Status |
+|----------------------|--------|
+| Search               |   ✅  |
+| Filters              |   ⬜  |
+| Journal Detail       |   ⬜  |
+| Writing Improvements |   ⬜  |
+| Empty State          |   ✅  |
+| Loading Experience   |   ✅  |
 
 ---
 
