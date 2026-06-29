@@ -63,7 +63,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" as const }}
           className="text-4xl md:text-5xl font-semibold tracking-tight text-stone-900 mb-6 leading-[1.15]"
         >
-          Your space for <span className="text-emerald-600 bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">mindful clarity</span>.
+          Your space for <span className="pr-1 text-emerald-600 bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">mindful clarity</span>.
         </motion.h1>
 
         <motion.p
