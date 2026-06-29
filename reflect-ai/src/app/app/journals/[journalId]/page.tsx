@@ -178,12 +178,7 @@ export default function JournalDetailPage() {
     }
   }, [user, journalId, router]);
 
-  const handleDeleteFloatingClick = async () => {
-    const confirmDel = window.confirm('Are you sure you want to delete this journal entry?');
-    if (confirmDel) {
-      await handleDelete();
-    }
-  };
+
 
   // ── Render: loading ───────────────────────────────────────────────────────
   if (loading) {
@@ -449,23 +444,68 @@ export default function JournalDetailPage() {
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-6 left-6 z-40 flex items-center gap-3"
           >
-            {/* Edit Bubble */}
-            <button
-              onClick={() => setModalOpen(true)}
-              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:bg-stone-50 hover:text-stone-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
-              aria-label="Edit journal entry"
-            >
-              <Pencil className="h-5 w-5" />
-            </button>
-
-            {/* Delete Bubble */}
-            <button
-              onClick={handleDeleteFloatingClick}
-              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
-              aria-label="Delete journal entry"
-            >
-              <Trash2 className="h-5 w-5" />
-            </button>
+            <AnimatePresence mode="wait">
+              {confirmDelete ? (
+                <motion.div
+                  key="floating-confirm"
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-center gap-3"
+                >
+                  {/* Confirm delete pill */}
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-medium text-white shadow-md transition-all hover:bg-red-600 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
+                    aria-label="Confirm deletion of this journal entry"
+                  >
+                    {deleting && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
+                    Confirm delete
+                  </button>
+                  {/* Cancel pill */}
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(false)}
+                    disabled={deleting}
+                    className="cursor-pointer rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-400 shadow-md transition-all hover:text-stone-600 disabled:opacity-50 focus-visible:outline-none focus-visible:underline"
+                    aria-label="Cancel deletion"
+                  >
+                    Cancel
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="floating-actions"
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-center gap-3"
+                >
+                  {/* Edit bubble */}
+                  <button
+                    type="button"
+                    onClick={() => setModalOpen(true)}
+                    className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:bg-stone-50 hover:text-stone-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+                    aria-label="Edit journal entry"
+                  >
+                    <Pencil className="h-5 w-5" />
+                  </button>
+                  {/* Delete bubble */}
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(true)}
+                    className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 shadow-md transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
+                    aria-label="Delete journal entry"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
