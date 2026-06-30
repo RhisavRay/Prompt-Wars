@@ -19,21 +19,30 @@ import { getJournal, deleteJournal, updateJournal } from '@/services/firebase/jo
 import { JournalFormModal } from '@/components/journal/journal-form-modal';
 import type { Journal, CreateJournalInput, UpdateJournalInput } from '@/types/journal';
 
-// ── Mood styling (mirrors journal-card.tsx) ─────────────────────────────────
-const MOOD_STYLES: Record<string, { bg: string; text: string; dot: string }> = {
-  happy:    { bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400'   },
-  peaceful: { bg: 'bg-teal-50',    text: 'text-teal-700',    dot: 'bg-teal-400'    },
-  calm:     { bg: 'bg-sky-50',     text: 'text-sky-700',     dot: 'bg-sky-400'     },
-  anxious:  { bg: 'bg-orange-50',  text: 'text-orange-700',  dot: 'bg-orange-400'  },
-  sad:      { bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400'    },
-  angry:    { bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400'     },
-  grateful: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-  excited:  { bg: 'bg-violet-50',  text: 'text-violet-700',  dot: 'bg-violet-400'  },
+// ── Emotion styling (mirrors journal-card.tsx) ───────────────────────────────
+const EMOTION_STYLES: Record<string, { bg: string; text: string; dot: string }> = {
+  joy:         { bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400'   },
+  peace:       { bg: 'bg-sky-50',     text: 'text-sky-700',     dot: 'bg-sky-400'     },
+  gratitude:   { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+  hopeful:     { bg: 'bg-teal-50',    text: 'text-teal-700',    dot: 'bg-teal-400'    },
+  anxiety:     { bg: 'bg-orange-50',  text: 'text-orange-700',  dot: 'bg-orange-400'  },
+  sadness:     { bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400'    },
+  frustration: { bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400'     },
+  tired:       { bg: 'bg-purple-50',  text: 'text-purple-700',  dot: 'bg-purple-400'  },
+  uncertain:   { bg: 'bg-indigo-50',  text: 'text-indigo-700',  dot: 'bg-indigo-400'  },
+  overwhelmed: { bg: 'bg-rose-50',    text: 'text-rose-700',    dot: 'bg-rose-400'    },
 };
 
-function getMoodStyle(mood: string) {
+function getEmotionStyle(emotion: string | null) {
+  if (!emotion) {
+    return {
+      bg: 'bg-stone-100',
+      text: 'text-stone-600',
+      dot: 'bg-stone-400',
+    };
+  }
   return (
-    MOOD_STYLES[mood.toLowerCase()] ?? {
+    EMOTION_STYLES[emotion.toLowerCase()] ?? {
       bg: 'bg-stone-100',
       text: 'text-stone-600',
       dot: 'bg-stone-400',
@@ -254,7 +263,7 @@ export default function JournalDetailPage() {
 
   if (!journal) return null;
 
-  const moodStyle = getMoodStyle(journal.mood);
+  const emotionStyle = getEmotionStyle(journal.initialCheckIn);
   const wasEdited = journal.updatedAt.getTime() - journal.createdAt.getTime() > 5000;
 
   return (
@@ -301,16 +310,18 @@ export default function JournalDetailPage() {
             )}
           </AnimatePresence>
 
-          {/* ── Mood badge ─────────────────────────────────────────────────── */}
-          <div className="mb-5">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium capitalize ${moodStyle.bg} ${moodStyle.text}`}
-              aria-label={`Mood: ${journal.mood}`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full ${moodStyle.dot}`} aria-hidden="true" />
-              {journal.mood}
-            </span>
-          </div>
+          {/* ── Initial Check-In badge ─────────────────────────────────────── */}
+          {journal.initialCheckIn && (
+            <div className="mb-5">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium capitalize ${emotionStyle.bg} ${emotionStyle.text}`}
+                aria-label={`Initial Check-In: ${journal.initialCheckIn}`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${emotionStyle.dot}`} aria-hidden="true" />
+                {journal.initialCheckIn}
+              </span>
+            </div>
+          )}
 
           {/* ── Title ──────────────────────────────────────────────────────── */}
           <h1 className="text-2xl font-semibold leading-snug tracking-tight text-stone-900 sm:text-3xl">

@@ -10,22 +10,83 @@ import {
   query,
   orderBy,
   Timestamp,
+  deleteField,
   type DocumentData,
 } from 'firebase/firestore';
 import { db } from './client';
-import type { Journal, CreateJournalInput, UpdateJournalInput } from '@/types/journal';
+import type { Journal, CreateJournalInput, UpdateJournalInput, Emotion } from '@/types/journal';
+
+/**
+ * Maps a legacy mood string to the new Emotion type.
+ * Returns null if the string is not recognized.
+ */
+function mapLegacyMood(mood: string): Emotion | null {
+  const normalized = mood.trim().toLowerCase();
+  
+  const validEmotions: Record<string, Emotion> = {
+    joy: 'joy',
+    peace: 'peace',
+    gratitude: 'gratitude',
+    hopeful: 'hopeful',
+    anxiety: 'anxiety',
+    sadness: 'sadness',
+    frustration: 'frustration',
+    tired: 'tired',
+    uncertain: 'uncertain',
+    overwhelmed: 'overwhelmed',
+  };
+  
+  if (normalized in validEmotions) {
+    return validEmotions[normalized];
+  }
+  
+  switch (normalized) {
+    case 'happy':
+    case 'excited':
+      return 'joy';
+    case 'calm':
+    case 'peaceful':
+      return 'peace';
+    case 'grateful':
+      return 'gratitude';
+    case 'anxious':
+      return 'anxiety';
+    case 'sad':
+      return 'sadness';
+    case 'angry':
+      return 'frustration';
+    default:
+      return null;
+  }
+}
 
 /**
  * Helper to convert a Firestore document data to a typed Journal object.
  */
 function mapDocToJournal(id: string, data: DocumentData): Journal {
+  let initialCheckIn: Emotion | null = null;
+  if (data.initialCheckIn !== undefined && data.initialCheckIn !== null) {
+    initialCheckIn = mapLegacyMood(data.initialCheckIn);
+  } else if (data.mood !== undefined && data.mood !== null) {
+    initialCheckIn = mapLegacyMood(data.mood);
+  }
+
   return {
     id,
     title: data.title || '',
     content: data.content || '',
-    mood: data.mood || '',
+    initialCheckIn,
     createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
     updatedAt: data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : new Date(),
+    
+    // AI Metadata
+    aiReflection: data.aiReflection ?? null,
+    primaryEmotion: data.primaryEmotion !== undefined && data.primaryEmotion !== null ? mapLegacyMood(data.primaryEmotion) : null,
+    secondaryEmotion: data.secondaryEmotion !== undefined && data.secondaryEmotion !== null ? mapLegacyMood(data.secondaryEmotion) : null,
+    tertiaryEmotion: data.tertiaryEmotion !== undefined && data.tertiaryEmotion !== null ? mapLegacyMood(data.tertiaryEmotion) : null,
+    emotionalShift: data.emotionalShift ?? null,
+    themes: data.themes ?? null,
+    processedAt: data.processedAt instanceof Timestamp ? data.processedAt.toDate() : null,
   };
 }
 
@@ -33,7 +94,7 @@ function mapDocToJournal(id: string, data: DocumentData): Journal {
  * Creates a new journal entry in Firestore under users/{uid}/journals/{journalId}.
  *
  * @param uid - The authenticated user's unique ID
- * @param input - The title, content, and mood for the journal entry
+ * @param input - The title, content, and initial check-in for the journal entry
  * @returns The newly created Journal document with id and timestamps
  * @throws Error if arguments are invalid or Firestore write fails
  */
@@ -52,7 +113,7 @@ export async function createJournal(uid: string, input: CreateJournalInput): Pro
   const newDocData = {
     title: input.title,
     content: input.content,
-    mood: input.mood,
+    initialCheckIn: input.initialCheckIn !== undefined ? input.initialCheckIn : null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
@@ -64,7 +125,7 @@ export async function createJournal(uid: string, input: CreateJournalInput): Pro
     id: newJournalDocRef.id,
     title: input.title,
     content: input.content,
-    mood: input.mood,
+    initialCheckIn: input.initialCheckIn !== undefined ? input.initialCheckIn : null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -117,7 +178,7 @@ export async function getAllJournals(uid: string): Promise<Journal[]> {
  *
  * @param uid - The authenticated user's unique ID
  * @param journalId - The journal document ID
- * @param input - Fields to update (title, content, mood)
+ * @param input - Fields to update (title, content, initialCheckIn)
  * @returns The updated Journal document
  * @throws Error if update fails, or if validation fails
  */
@@ -134,6 +195,7 @@ export async function updateJournal(
 
   const updateData: DocumentData = {
     updatedAt: serverTimestamp(),
+    mood: deleteField(),
   };
 
   if (input.title !== undefined) {
@@ -147,8 +209,8 @@ export async function updateJournal(
     updateData.content = input.content;
   }
 
-  if (input.mood !== undefined) {
-    updateData.mood = input.mood;
+  if (input.initialCheckIn !== undefined) {
+    updateData.initialCheckIn = input.initialCheckIn;
   }
 
   await updateDoc(journalDocRef, updateData);

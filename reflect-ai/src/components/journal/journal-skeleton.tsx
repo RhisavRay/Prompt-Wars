@@ -28,7 +28,7 @@ function Skeleton({ className }: SkeletonProps) {
 export function JournalSkeleton() {
   return (
     <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-      {/* Mood pill */}
+      {/* Initial Check-In pill */}
       <Skeleton className="mb-4 h-5 w-20 rounded-full" />
       {/* Title */}
       <Skeleton className="mb-3 h-5 w-3/4" />

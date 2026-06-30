@@ -13,17 +13,17 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X, Loader2 } from 'lucide-react';
-import type { Journal, CreateJournalInput, UpdateJournalInput } from '@/types/journal';
+import type { Journal, CreateJournalInput, UpdateJournalInput, Emotion } from '@/types/journal';
 
-const MOOD_OPTIONS = [
-  'happy', 'peaceful', 'calm', 'grateful', 'excited',
-  'anxious', 'sad', 'angry',
+const EMOTION_OPTIONS: Emotion[] = [
+  'joy', 'peace', 'gratitude', 'hopeful', 'anxiety',
+  'sadness', 'frustration', 'tired', 'uncertain', 'overwhelmed',
 ];
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required').max(120, 'Title is too long'),
   content: z.string().max(5000, 'Content is too long'),
-  mood: z.string().min(1, 'Mood is required'),
+  initialCheckIn: z.string().nullable().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -54,10 +54,10 @@ export function JournalFormModal({
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { title: '', content: '', mood: 'calm' },
+    defaultValues: { title: '', content: '', initialCheckIn: null },
   });
 
-  const selectedMood = useWatch({ control, name: 'mood' });
+  const selectedEmotion = useWatch({ control, name: 'initialCheckIn' });
 
   // Reset the form every time the modal opens.
   // - Create mode (editingJournal is null): always start with empty defaults.
@@ -70,10 +70,10 @@ export function JournalFormModal({
       reset({
         title: editingJournal.title,
         content: editingJournal.content,
-        mood: editingJournal.mood,
+        initialCheckIn: editingJournal.initialCheckIn,
       });
     } else {
-      reset({ title: '', content: '', mood: 'calm' });
+      reset({ title: '', content: '', initialCheckIn: null });
     }
   }, [isOpen, editingJournal, reset]);
 
@@ -95,18 +95,18 @@ export function JournalFormModal({
     if (!editingJournal) return true; // Always allow save in create mode
     const originalTitle = (editingJournal.title || '').trim();
     const originalContent = (editingJournal.content || '').trim();
-    const originalMood = (editingJournal.mood || '').trim();
+    const originalEmotion = editingJournal.initialCheckIn || null;
 
     const currentTitle = (watchedTitle || '').trim();
     const currentContent = (watchedContent || '').trim();
-    const currentMood = (selectedMood || '').trim();
+    const currentEmotion = selectedEmotion || null;
 
     return (
       originalTitle !== currentTitle ||
       originalContent !== currentContent ||
-      originalMood !== currentMood
+      originalEmotion !== currentEmotion
     );
-  }, [editingJournal, watchedTitle, watchedContent, selectedMood]);
+  }, [editingJournal, watchedTitle, watchedContent, selectedEmotion]);
 
   const handleFormSubmit = (values: FormValues) => {
     if (isEditing && !hasMeaningfulChanges) {
@@ -114,7 +114,11 @@ export function JournalFormModal({
       onClose();
       return;
     }
-    onSubmit(values);
+    onSubmit({
+      title: values.title,
+      content: values.content,
+      initialCheckIn: (values.initialCheckIn || null) as Emotion | null,
+    });
   };
 
   return (
@@ -186,32 +190,35 @@ export function JournalFormModal({
                 )}
               </div>
 
-              {/* Mood selector */}
+              {/* Initial Check-In selector */}
               <div>
-                <p className="mb-2 text-sm font-medium text-stone-700">Mood</p>
-                <div role="group" aria-label="Select mood" className="flex flex-wrap gap-2">
-                  {MOOD_OPTIONS.map((mood) => (
+                <p className="mb-2 text-sm font-medium text-stone-700">Initial Check-In <span className="text-stone-400 font-normal text-xs">(optional)</span></p>
+                <div role="group" aria-label="Select initial check-in feeling" className="flex flex-wrap gap-2">
+                  {EMOTION_OPTIONS.map((emotion) => (
                     <button
-                      key={mood}
+                      key={emotion}
                       type="button"
-                      onClick={() => setValue('mood', mood, { shouldValidate: true })}
+                      onClick={() => {
+                        const newValue = selectedEmotion === emotion ? null : emotion;
+                        setValue('initialCheckIn', newValue, { shouldValidate: true });
+                      }}
                       className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
-                        selectedMood === mood
+                        selectedEmotion === emotion
                           ? 'bg-stone-900 text-white shadow-sm'
                           : 'border border-stone-200 text-stone-600 hover:bg-stone-100'
                       }`}
-                      aria-pressed={selectedMood === mood}
-                      aria-label={`Mood: ${mood}`}
+                      aria-pressed={selectedEmotion === emotion}
+                      aria-label={`Feeling: ${emotion}`}
                     >
-                      {mood}
+                      {emotion}
                     </button>
                   ))}
                 </div>
-                {/* hidden input so RHF can track mood value */}
-                <input type="hidden" {...register('mood')} />
-                {errors.mood && (
+                {/* hidden input so RHF can track initialCheckIn value */}
+                <input type="hidden" {...register('initialCheckIn')} />
+                {errors.initialCheckIn && (
                   <p className="mt-1.5 text-xs text-red-500" role="alert">
-                    {errors.mood.message}
+                    {errors.initialCheckIn.message}
                   </p>
                 )}
               </div>
