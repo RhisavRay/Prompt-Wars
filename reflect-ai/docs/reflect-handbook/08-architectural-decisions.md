@@ -272,6 +272,59 @@ Trade-offs:
 
 ---
 
+# ADR-006
+
+## Structured AI Responses
+
+### Context
+
+Sprint 03 introduces AI-generated reflections using Google Gemini.
+
+A straightforward implementation would allow the model to return free-form Markdown or plain text. While simple, this approach makes it difficult to reliably store, validate, evolve, and reuse AI outputs throughout future sprints.
+
+Later roadmap features—including Reflection Cards, Insights, Long-Term Memory, and Growth Stories—require individual pieces of AI output rather than one block of generated text.
+
+### Alternatives Considered
+
+- Free-form Markdown responses.
+- Plain text responses.
+- Structured JSON responses.
+
+### Decision
+
+Gemini will return a structured JSON object that follows a predefined schema.
+
+The application will validate the response before storing it in Firestore.
+
+User-facing content will be rendered from the structured data rather than directly displaying raw model output.
+
+### Reasoning
+
+Structured responses provide a stable contract between the AI model and the application.
+
+This approach improves validation, reduces parsing errors, and allows future features to reuse individual AI-generated fields without relying on fragile text processing.
+
+It also makes prompt iteration safer because the overall data contract remains stable even as wording evolves.
+
+### Consequences
+
+Benefits:
+
+- Predictable AI responses.
+- Easier validation.
+- Easier Firestore storage.
+- Cleaner UI rendering.
+- Better long-term maintainability.
+- Supports future Insight and Memory features.
+- Simplifies prompt evolution.
+
+Trade-offs:
+
+- Slightly more complex prompting.
+- Requires response validation before persistence.
+
+---
+
 # Future Decisions
 
 Examples of future ADRs include:
