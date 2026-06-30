@@ -35,15 +35,15 @@ Do **not** read every document by default.
 
 Instead, read only the sections relevant to the task you are working on.
 
-| Task | Read |
-|------|------|
-| Understand Reflect's mission and vision | 00 - Project Philosophy |
-| Build or modify features | 01 - Engineering Principles, 02 - Architecture |
-| Design or improve UI/UX | 03 - UI & UX Principles |
-| Build AI functionality | 04 - AI Philosophy |
-| Work using AI coding agents | 05 - Development Workflow |
-| Verify implementation quality | 06 - Testing & Quality |
-| Understand future direction | 07 - Roadmap |
+|                   Task                    |                      Read                      |
+|-------------------------------------------|------------------------------------------------|
+| Understand Reflect's mission and vision   | 00 - Project Philosophy                        |
+| Build or modify features                  | 01 - Engineering Principles, 02 - Architecture |
+| Design or improve UI/UX                   | 03 - UI & UX Principles                        |
+| Build AI functionality                    | 04 - AI Philosophy                             |
+| Work using AI coding agents               | 05 - Development Workflow                      |
+| Verify implementation quality             | 06 - Testing & Quality                         |
+| Understand future direction               | 07 - Roadmap                                   |
 
 ---
 

@@ -234,14 +234,14 @@ Every feature must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Reflection Timeline | ⬜ |
-| Looking Back | ⬜ |
-| Personal Milestones | ⬜ |
-| Growth Stories | ⬜ |
-| Meaningful Memories | ⬜ |
-| Remembering Together | ⬜ |
+|        Feature       |  Status |
+|----------------------|---------|
+| Reflection Timeline  |   ⬜   |
+| Looking Back         |   ⬜   |
+| Personal Milestones  |   ⬜   |
+| Growth Stories       |   ⬜   |
+| Meaningful Memories  |   ⬜   |
+| Remembering Together |   ⬜   |
 
 ---
 

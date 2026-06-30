@@ -246,15 +246,15 @@ Every feature must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Background Processing | ⬜ |
-| Gemini Integration | ⬜ |
-| AI Reflection | ⬜ |
-| Reflection Prompt | ⬜ |
-| Processing Status | ⬜ |
-| Reflection Storage | ⬜ |
-| Failure Handling | ⬜ |
+|        Feature        | Status |
+|-----------------------|--------|
+| Background Processing |   ⬜   |
+| Gemini Integration    |   ⬜   |
+| AI Reflection         |   ⬜   |
+| Reflection Prompt     |   ⬜   |
+| Processing Status     |   ⬜   |
+| Reflection Storage    |   ⬜   |
+| Failure Handling      |   ⬜   |
 
 ---
 

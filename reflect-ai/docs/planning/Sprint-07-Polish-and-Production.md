@@ -253,15 +253,15 @@ Every improvement must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Experience Refinement | ⬜ |
-| Accessibility Audit | ⬜ |
-| Performance Optimization | ⬜ |
-| Settings & Preferences | ⬜ |
-| Export & Data Ownership | ⬜ |
-| Reliability & Recovery | ⬜ |
-| Production Readiness | ⬜ |
+|          Feature         | Status |
+|--------------------------|--------|
+| Experience Refinement    |   ⬜   |
+| Accessibility Audit      |   ⬜   |
+| Performance Optimization |   ⬜   |
+| Settings & Preferences   |   ⬜   |
+| Export & Data Ownership  |   ⬜   |
+| Reliability & Recovery   |   ⬜   |
+| Production Readiness     |   ⬜   |
 
 ---
 

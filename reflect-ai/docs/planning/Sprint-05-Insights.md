@@ -230,14 +230,14 @@ Every feature must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Theme Detection | ⬜ |
-| Emotional Journey | ⬜ |
-| Weekly Reflection | ⬜ |
-| Monthly Reflection | ⬜ |
-| Personal Patterns | ⬜ |
-| Gentle Insights | ⬜ |
+|          Feature          |  Status |
+|---------------------------|---------|
+| Theme Detection           |   ⬜   |
+| Emotional Journey         |   ⬜   |
+| Weekly Reflection         |   ⬜   |
+| Monthly Reflection        |   ⬜   |
+| Personal Patterns         |   ⬜   |
+| Gentle Insights           |   ⬜   |
 
 ---
 

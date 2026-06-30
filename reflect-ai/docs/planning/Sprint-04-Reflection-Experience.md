@@ -217,14 +217,14 @@ Every feature must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Reflection Cards | ⬜ |
-| Reflection Formatting | ⬜ |
-| Follow-up Reflection | ⬜ |
-| Reflection Regeneration | ⬜ |
-| Reflection History | ⬜ |
-| Reflection Feedback | ⬜ |
+|          Feature          |  Status |
+|---------------------------|---------|
+| Reflection Cards          |   ⬜   |
+| Reflection Formatting     |   ⬜   |
+| Follow-up Reflection      |   ⬜   |
+| Reflection Regeneration   |   ⬜   |
+| Reflection History        |   ⬜   |
+| Reflection Feedback       |   ⬜   |
 
 ---
 
