@@ -40,7 +40,7 @@ It simply captures where the user believes they are emotionally as they begin wr
 
 ## Feature 1 — Initial Check-In
 
-**Status:** Not Started
+**Status:** Completed ✅
 
 Replace the existing Mood field with the new Initial Check-In experience.
 
