@@ -14,11 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X, Loader2 } from 'lucide-react';
 import type { Journal, CreateJournalInput, UpdateJournalInput, Emotion } from '@/types/journal';
-
-const EMOTION_OPTIONS: Emotion[] = [
-  'joy', 'peace', 'gratitude', 'hopeful', 'anxiety',
-  'sadness', 'frustration', 'tired', 'uncertain', 'overwhelmed',
-];
+import { EMOTION_LIST } from '@/constants/emotions';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required').max(120, 'Title is too long'),
@@ -192,25 +188,34 @@ export function JournalFormModal({
 
               {/* Initial Check-In selector */}
               <div>
-                <p className="mb-2 text-sm font-medium text-stone-700">Initial Check-In <span className="text-stone-400 font-normal text-xs">(optional)</span></p>
-                <div role="group" aria-label="Select initial check-in feeling" className="flex flex-wrap gap-2">
-                  {EMOTION_OPTIONS.map((emotion) => (
+                <p id="check-in-label" className="text-sm font-semibold text-stone-900">How are you arriving today?</p>
+                <p id="check-in-description" className="mb-3 text-xs text-stone-500">
+                  Choose the feeling that feels closest to how you&apos;re arriving today. Selecting an emotion is optional.
+                </p>
+                <div
+                  role="group"
+                  aria-labelledby="check-in-label"
+                  aria-describedby="check-in-description"
+                  className="flex flex-wrap gap-2"
+                >
+                  {EMOTION_LIST.map((emotion) => (
                     <button
-                      key={emotion}
+                      key={emotion.id}
                       type="button"
                       onClick={() => {
-                        const newValue = selectedEmotion === emotion ? null : emotion;
+                        const newValue = selectedEmotion === emotion.id ? null : emotion.id;
                         setValue('initialCheckIn', newValue, { shouldValidate: true });
                       }}
-                      className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
-                        selectedEmotion === emotion
-                          ? 'bg-stone-900 text-white shadow-sm'
-                          : 'border border-stone-200 text-stone-600 hover:bg-stone-100'
+                      className={`cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
+                        selectedEmotion === emotion.id
+                          ? 'bg-stone-900 text-white shadow-sm ring-1 ring-stone-900'
+                          : 'border border-stone-200 bg-white text-stone-600 hover:bg-stone-50 hover:text-stone-900'
                       }`}
-                      aria-pressed={selectedEmotion === emotion}
-                      aria-label={`Feeling: ${emotion}`}
+                      aria-pressed={selectedEmotion === emotion.id}
+                      aria-label={`${emotion.emoji} ${emotion.label}`}
                     >
-                      {emotion}
+                      <span className="text-sm" aria-hidden="true">{emotion.emoji}</span>
+                      <span>{emotion.label}</span>
                     </button>
                   ))}
                 </div>

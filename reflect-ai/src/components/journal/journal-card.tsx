@@ -12,37 +12,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import type { Journal } from '@/types/journal';
-
-// Emotion styling
-const EMOTION_STYLES: Record<string, { bg: string; text: string; dot: string }> = {
-  joy:         { bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400'   },
-  peace:       { bg: 'bg-sky-50',     text: 'text-sky-700',     dot: 'bg-sky-400'     },
-  gratitude:   { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-  hopeful:     { bg: 'bg-teal-50',    text: 'text-teal-700',    dot: 'bg-teal-400'    },
-  anxiety:     { bg: 'bg-orange-50',  text: 'text-orange-700',  dot: 'bg-orange-400'  },
-  sadness:     { bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400'    },
-  frustration: { bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400'     },
-  tired:       { bg: 'bg-purple-50',  text: 'text-purple-700',  dot: 'bg-purple-400'  },
-  uncertain:   { bg: 'bg-indigo-50',  text: 'text-indigo-700',  dot: 'bg-indigo-400'  },
-  overwhelmed: { bg: 'bg-rose-50',    text: 'text-rose-700',    dot: 'bg-rose-400'    },
-};
-
-function getEmotionStyle(emotion: string | null) {
-  if (!emotion) {
-    return {
-      bg: 'bg-stone-100',
-      text: 'text-stone-600',
-      dot: 'bg-stone-400',
-    };
-  }
-  return (
-    EMOTION_STYLES[emotion.toLowerCase()] ?? {
-      bg: 'bg-stone-100',
-      text: 'text-stone-600',
-      dot: 'bg-stone-400',
-    }
-  );
-}
+import { getEmotionConfig } from '@/constants/emotions';
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -62,7 +32,7 @@ interface JournalCardProps {
 export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCardProps) {
   const router = useRouter();
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const emotionStyle = getEmotionStyle(journal.initialCheckIn);
+  const emotionConfig = getEmotionConfig(journal.initialCheckIn);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -91,13 +61,13 @@ export function JournalCard({ journal, isMutating, onEdit, onDelete }: JournalCa
     >
       {/* Initial Check-In badge */}
       <div className="mb-4 flex items-center justify-between">
-        {journal.initialCheckIn ? (
+        {emotionConfig ? (
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium capitalize ${emotionStyle.bg} ${emotionStyle.text}`}
-            aria-label={`Initial Check-In: ${journal.initialCheckIn}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${emotionConfig.bg} ${emotionConfig.text}`}
+            aria-label={`Initial Check-In: ${emotionConfig.label}`}
           >
-            <span className={`h-1.5 w-1.5 rounded-full ${emotionStyle.dot}`} aria-hidden="true" />
-            {journal.initialCheckIn}
+            <span aria-hidden="true">{emotionConfig.emoji}</span>
+            {emotionConfig.label}
           </span>
         ) : (
           <div aria-hidden="true" />
