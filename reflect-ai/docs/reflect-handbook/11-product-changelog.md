@@ -1,8 +1,8 @@
 # 11 - Product Changelog
 
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Status:** Living Document  
-**Last Updated:** 29 June 2026  
+**Last Updated:** 30 June 2026  
 **Audience:** Everyone
 
 ---
@@ -257,6 +257,85 @@ The focus shifts from helping users write journals to helping them begin each re
 
 Rather than asking users to identify the "correct" emotion, Reflect will invite them to acknowledge where they are emotionally before writing begins, laying the foundation for future AI-assisted reflection while preserving the calm, non-judgmental experience established during Sprint 01.
 
+---
+
+# v1.2.0 — Sprint 02 Complete
+
+**Release Date:** 30 June 2026
+
+## Overview
+
+Completed Sprint 02, introducing Reflect's Initial Check-In experience and establishing the emotional foundation of the product.
+
+Rather than asking users to classify themselves or complete a form, Reflect now gently welcomes them into the act of journaling through an optional emotional check-in. This release focused on product psychology, creating a calmer and more intentional beginning to every journal while preparing the application for future AI-assisted reflection.
+
+Sprint 02 also completed the architectural foundation required for Sprint 03 by introducing AI-ready metadata without exposing any AI functionality to users.
+
+---
+
+## Features Added
+
+* Initial Check-In experience.
+* Emotion chip selection interface.
+* Shared emotion configuration.
+* Emoji-supported emotional check-ins.
+* AI-ready journal metadata.
+* Backward-compatible migration from legacy mood data.
+
+---
+
+## UX Improvements
+
+* Replaced "Mood" with the more welcoming Initial Check-In experience.
+* Introduced emotion chips that are lightweight, selectable, and fully optional.
+* Added emojis to improve visual recognition without overwhelming the interface.
+* Created a consistent emotion presentation across dashboard, detail pages, and editing workflows.
+* Improved accessibility through keyboard-friendly interaction and visible focus states.
+* Enhanced mobile responsiveness with naturally wrapping emotion chips.
+
+---
+
+## Architecture
+
+* Introduced a centralized emotion configuration as the single source of truth for emotion identifiers, labels, emojis, and presentation styles.
+* Refactored the journal model from `mood` to `initialCheckIn`.
+* Implemented backward compatibility through Firestore mapping rather than migration scripts.
+* Added placeholder metadata supporting future AI-generated reflections, emotion analysis, and thematic insights.
+* Preserved the existing service architecture and CRUD workflows without introducing duplicate logic.
+
+---
+
+## Product Decisions
+
+Major decisions made during this release:
+
+* Initial Check-In remains completely optional.
+* Reflect never assumes how a user is feeling by selecting a default emotion.
+* Emotions are presented as invitations into reflection rather than assessments.
+* Legacy journal data upgrades naturally over time instead of requiring forced migrations.
+* AI remains intentionally invisible until Sprint 03.
+
+---
+
+## Lessons Learned
+
+Important lessons from Sprint 02:
+
+* Small wording changes can significantly influence how a product feels.
+* Product psychology deserves the same level of design as technical architecture.
+* Centralized configuration improves long-term consistency while reducing maintenance.
+* Backward compatibility is best isolated within the persistence layer rather than spreading throughout the application.
+* Building future-ready architecture incrementally keeps the codebase clean without introducing unnecessary complexity.
+
+---
+
+## Looking Ahead
+
+Sprint 03 introduces Reflect's AI Foundation.
+
+For the first time, Reflect will respond to the user's writing rather than simply storing it.
+
+The focus of the next sprint is not AI integration itself, but designing a reflection experience that feels calm, supportive, and trustworthy while preserving the user's ownership of their thoughts.
 
 # Guiding Statement
 

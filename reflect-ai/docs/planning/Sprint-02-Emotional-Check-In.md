@@ -1,7 +1,7 @@
 # Sprint 02 — Emotional Check-In
 
 **Sprint:** 02  
-**Status:** Planned  
+**Status:** Completed ✅
 **Priority:** High  
 **Estimated Duration:** 1–2 Weeks  
 **Last Updated:** 30 June 2026
@@ -55,7 +55,7 @@ Requirements:
 
 ## Feature 2 — Emotion Chips
 
-**Status:** Not Started
+**Status:** Completed ✅
 
 Replace dropdown selection with emotion chips.
 
@@ -80,7 +80,7 @@ Users should be able to select only one starting emotion.
 
 ## Feature 3 — Gentle Guidance
 
-**Status:** Not Started
+**Status:** Completed ✅
 
 Add supporting copy explaining the purpose of the Initial Check-In.
 
@@ -96,7 +96,7 @@ The wording should reduce hesitation rather than increase it.
 
 ## Feature 4 — Updated Journal Data Model
 
-**Status:** Not Started
+**Status:** Completed ✅
 
 Rename the existing mood field to:
 
@@ -108,7 +108,7 @@ The new data model should support future AI reflections without requiring additi
 
 ## Feature 5 — Emotional Metadata Foundation
 
-**Status:** Not Started
+**Status:** Completed ✅
 
 Prepare the journal model for future AI processing.
 
@@ -128,7 +128,7 @@ These fields should remain unused until Sprint 03.
 
 ## Feature 6 — UI Refinements
 
-**Status:** Not Started
+**Status:** Completed ✅
 
 Improve the writing flow around the Initial Check-In.
 
@@ -212,12 +212,12 @@ Every feature must:
 
 |        Feature         | Status |
 |------------------------|--------|
-| Initial Check-In       |    ✅  |
-| Emotion Chips          |    ⬜  |
-| Guidance Text          |    ⬜  |
-| Data Model Update      |    ⬜  |
-| AI Metadata Foundation |    ⬜  |
-| UI Refinements         |    ⬜  |
+| Initial Check-In       |   ✅   |
+| Emotion Chips          |   ✅   |
+| Guidance Text          |   ✅   |
+| Data Model Update      |   ✅   |
+| AI Metadata Foundation |   ✅   |
+| UI Refinements         |   ✅   |
 
 ---
 
