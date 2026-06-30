@@ -210,14 +210,14 @@ Every feature must:
 
 # Progress
 
-| Feature | Status |
-|----------|--------|
-| Initial Check-In | ⬜ |
-| Emotion Chips | ⬜ |
-| Guidance Text | ⬜ |
-| Data Model Update | ⬜ |
-| AI Metadata Foundation | ⬜ |
-| UI Refinements | ⬜ |
+|        Feature         | Status |
+|------------------------|--------|
+| Initial Check-In       |    ✅  |
+| Emotion Chips          |    ⬜  |
+| Guidance Text          |    ⬜  |
+| Data Model Update      |    ⬜  |
+| AI Metadata Foundation |    ⬜  |
+| UI Refinements         |    ⬜  |
 
 ---
 
