@@ -48,6 +48,36 @@ It should observe respectfully, never dominate the conversation.
 
 ---
 
+# Memory Foundation
+
+Sprint 03 introduces Reflect's layered memory architecture.
+
+Rather than treating every journal as an isolated event, Reflect begins maintaining an evolving understanding of the user through three complementary memory layers.
+
+### Journal Memory
+
+Each journal produces its own structured AI memory.
+
+This represents the permanent understanding of that individual journal.
+
+### Active User Memory
+
+Reflect maintains a continuously evolving understanding of the user's current context, ongoing life events, recurring themes, communication style, and behavioural observations.
+
+This memory changes over time and serves as the primary context for future reflections.
+
+### Archive Memory
+
+Older journal memories remain available for retrieval while being excluded from normal AI processing.
+
+When an older event becomes relevant again, Reflect may recover it from the archive and reincorporate it into Active User Memory.
+
+This architecture allows Reflect to provide increasingly personalised reflections while remaining computationally efficient.
+
+Implementation details are governed by ADR-007.
+
+---
+
 # Features
 
 ## Feature 1 — Background AI Processing
@@ -144,18 +174,26 @@ AI should feel calm.
 
 ---
 
-## Feature 6 — Reflection Storage
+## Feature 6 — AI Memory & Reflection Storage
 
 **Status:** Not Started
 
-Store AI output inside Firestore.
+Store AI-generated reflection data and structured memory inside Firestore.
 
-Separate:
+This includes:
 
-- User-authored content
-- AI-generated content
+- User-authored journal content.
+- AI-generated reflection.
+- Journal Memory.
+- Active User Memory.
 
-Both should remain clearly distinguishable.
+Journal Memory represents one journal.
+
+Active User Memory represents Reflect's evolving understanding of the user.
+
+Memory updates occur after every journal creation, update, and deletion.
+
+Implementation follows ADR-006 and ADR-007.
 
 ---
 
@@ -191,7 +229,10 @@ Sprint 03 is complete when:
 
 This sprint intentionally excludes:
 
-- Long-term memory
+- Long-term insights
+- Growth timeline
+- Memory retrieval UI
+- User-facing memory management
 - Reflection timeline
 - Analytics
 - Monthly summaries
@@ -280,7 +321,9 @@ Questions to answer:
 - Did users understand that AI reflections are suggestions?
 - Did background processing improve the experience?
 - Was AI fast enough without becoming intrusive?
-- Is the architecture ready for long-term insights?
+- Is the layered memory architecture supporting high-quality reflections?
+- Is Active User Memory remaining relevant without growing uncontrollably?
+- Is the architecture ready for future Insights and Long-Term Companion features?
 
 ---
 

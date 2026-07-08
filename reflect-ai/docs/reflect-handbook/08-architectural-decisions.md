@@ -325,6 +325,229 @@ Trade-offs:
 
 ---
 
+# ADR-007
+
+## Layered Memory Architecture
+
+### Context
+
+As Reflect evolves beyond individual journal reflections, the AI requires long-term context in order to generate thoughtful, personalized observations.
+
+A naïve implementation would require the AI to repeatedly analyze every historical journal whenever new reflections are generated. While technically possible, this approach becomes increasingly expensive, slower, and less scalable as a user's journal history grows.
+
+Furthermore, not every past journal remains equally relevant over time. Reflect should remember what matters while allowing less relevant context to naturally fade into the background.
+
+### Alternatives Considered
+
+- Reprocess every journal for every AI request.
+- Store only individual journal summaries.
+- Maintain one continually rewritten user summary.
+- Introduce a layered memory architecture.
+
+### Decision
+
+Reflect will maintain multiple layers of AI memory, each serving a different purpose.
+
+---
+
+### Layer 1 — Journal Memory
+
+Every journal generates its own structured AI memory object.
+
+This memory represents only that journal and remains immutable once generated.
+
+It may include:
+
+- Journal summary
+- Reflection
+- Themes
+- Emotional observations
+- Noteworthy events
+- People mentioned
+- Context extracted from the journal
+
+Journal Memory serves as the permanent historical record for that individual entry.
+
+---
+
+### Layer 2 — Active User Memory
+
+Reflect maintains a continuously evolving memory describing its current understanding of the user.
+
+Unlike Journal Memory, this document changes over time.
+
+Its purpose is not to remember everything.
+
+Its purpose is to maintain useful context for future reflections.
+
+Examples include:
+
+- Current life events
+- Ongoing challenges
+- Active goals
+- Important relationships
+- Recurring themes
+- Helpful routines
+- Behavioural observations
+- Communication style
+
+This memory should prioritise relevance over completeness.
+
+---
+
+### Layer 3 — Archive Memory
+
+Older Journal Memory objects should transition into an archival layer.
+
+Archived memories remain available for retrieval but are excluded from normal AI processing.
+
+When future journals reference older events, Reflect may search archived memories to recover relevant context before updating Active User Memory.
+
+This preserves historical continuity without requiring every journal to remain part of the active working context.
+
+---
+
+### Memory Evolution
+
+After every journal is:
+
+- Created
+- Updated
+- Deleted
+
+Reflect performs a memory update.
+
+During this process the AI determines:
+
+- What information remains important.
+- What information has become outdated.
+- Which life events continue to influence the user.
+- Which observations should fade from Active User Memory.
+- Which archived memories should be resurfaced.
+
+Memory should evolve gradually rather than being rewritten from scratch.
+
+---
+
+### Behaviour Over Labels
+
+Reflect should store observations rather than permanent personality labels.
+
+Preferred examples:
+
+- "Often approaches uncertainty with curiosity."
+- "Frequently reflects before making important decisions."
+- "Family appears to be an important source of support."
+
+Avoid examples such as:
+
+- "The user is optimistic."
+- "The user is anxious."
+- "The user is an introvert."
+
+Observations remain open to change.
+
+Labels imply certainty that Reflect should never claim.
+
+---
+
+### Learning Before Remembering
+
+During a user's early journaling history, Reflect should prioritise building an understanding of the user's communication style, recurring concerns, and reflective patterns.
+
+As confidence in this understanding increases, memory updates gradually shift toward maintaining context and recognising meaningful long-term changes.
+
+The transition should be based on confidence rather than a fixed journal count.
+
+---
+
+### Importance-Based Memory
+
+Not every event deserves equal attention.
+
+Reflect should evaluate the significance of newly discovered information.
+
+Important events should remain in Active User Memory.
+
+Minor or outdated information should gradually fade while remaining recoverable through Archive Memory when necessary.
+
+Memory should behave more like human recollection than permanent storage.
+
+---
+
+### Facts vs. Observations
+
+Reflect distinguishes between stable facts and evolving observations.
+
+Examples of stable facts include:
+
+- Family members
+- Occupation
+- Long-term projects
+- Significant life milestones
+
+Examples of observations include:
+
+- Current emotional patterns
+- Recurring themes
+- Decision-making tendencies
+- Ongoing concerns
+
+Facts should remain stable unless explicitly changed by the user.
+
+Observations should evolve naturally as new journals are written.
+
+### Reasoning
+
+Layered memory allows Reflect to provide increasingly personal reflections without repeatedly processing an ever-growing journal history.
+
+Separating Journal Memory from Active User Memory also creates a stable foundation for future capabilities including:
+
+- Reflection continuity
+- Cross-journal insights
+- Long-term pattern recognition
+- Memory retrieval
+- Growth stories
+- Personal milestones
+
+This architecture keeps AI context relevant while remaining computationally efficient.
+
+### Consequences
+
+Benefits:
+
+- Faster AI processing.
+- Lower token usage.
+- Better scalability.
+- More personalised reflections.
+- Cleaner separation between historical records and active context.
+- Natural support for future Insight and Long-Term Companion features.
+- Memory evolves organically rather than growing indefinitely.
+
+Trade-offs:
+
+- More complex memory management.
+- Additional validation logic.
+- Requires careful prompt design to prevent unwanted memory drift.
+
+---
+
+### Future Considerations
+
+Future improvements may include:
+
+- Memory confidence scoring.
+- Confidence-weighted observations.
+- Automatic archival strategies.
+- User-visible memory management.
+- Manual correction of AI memories.
+- Memory versioning.
+- Retrieval optimisation.
+
+These enhancements build upon the layered memory architecture established by this decision without altering its fundamental principles.
+
+---
+
 # Future Decisions
 
 Examples of future ADRs include:
