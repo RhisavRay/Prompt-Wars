@@ -82,7 +82,7 @@ Implementation details are governed by ADR-007.
 
 ## Feature 1 — Background AI Processing
 
-**Status:** Not Started
+**Status:** Complete ✅
 
 After a journal is successfully saved:
 
@@ -96,7 +96,7 @@ The user should never wait for AI.
 
 ## Feature 2 — Gemini Integration
 
-**Status:** Not Started
+**Status:** In Progress
 
 Integrate Google's Gemini API through the service layer.
 
@@ -289,7 +289,7 @@ Every feature must:
 
 |        Feature        | Status |
 |-----------------------|--------|
-| Background Processing |   ⬜   |
+| Background Processing |   ✅   |
 | Gemini Integration    |   ⬜   |
 | AI Reflection         |   ⬜   |
 | Reflection Prompt     |   ⬜   |
