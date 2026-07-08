@@ -284,26 +284,23 @@ Background AI processing
 
 ↓
 
-Emotion analysis
+Generate Journal Memory
 
 ↓
 
-Theme extraction
+Update Active User Memory
 
 ↓
 
-Reflection generation
+Generate AI Reflection
 
 ↓
 
-Firestore update
+Persist AI Outputs
 
 ↓
 
-Insights available to user
-```
-
-The user should never wait for AI processing before continuing.
+Reflection becomes available
 
 ---
 

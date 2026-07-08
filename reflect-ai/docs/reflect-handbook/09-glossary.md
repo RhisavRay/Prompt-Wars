@@ -205,6 +205,30 @@ Reflection prompts should invite exploration rather than provide answers.
 
 ---
 
+## Journal Memory
+
+A structured, immutable AI representation of a single journal entry.
+
+Journal Memory captures Reflect's understanding of one journal at the time it was written and never changes after creation.
+
+---
+
+## Active User Memory
+
+Reflect's continuously evolving understanding of the user's current context.
+
+Unlike Journal Memory, Active User Memory changes over time as journals are created, updated, or deleted.
+
+---
+
+## Archive Memory
+
+Older Journal Memories that are no longer part of Active User Memory but remain available for retrieval when relevant.
+
+Archive Memory preserves historical continuity while keeping AI context efficient.
+
+---
+
 # Technical Terms
 
 ## Dashboard

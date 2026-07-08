@@ -197,11 +197,15 @@ These observations should help users build self-awareness over time.
 
 # Long-Term Memory
 
-Reflect should remember patterns.
+Reflect remembers through a layered memory architecture.
 
-It should not remember every detail.
+Individual journals become immutable Journal Memories.
 
-The objective is to recognize meaningful trends rather than reproduce personal history.
+An evolving Active User Memory maintains the most relevant current context.
+
+Older memories may transition into an archival layer while remaining available for retrieval when future reflections require historical continuity.
+
+The objective is to remember what matters without repeatedly processing every journal.
 
 Examples:
 
