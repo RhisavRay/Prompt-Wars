@@ -16,7 +16,6 @@ const mockValidResponse = JSON.stringify({
     importantObservations: ['User tends to feel excited when learning new things.'],
   },
   reflection: {
-    title: 'New Beginnings',
     body: 'It seems you are embarking on an exciting journey. While nervousness is natural...',
     followUpQuestion: 'What is the most exciting part of this new chapter?',
   },
@@ -39,7 +38,7 @@ const mockInvalidResponseStructure = JSON.stringify({
     primaryEmotion: 'joy',
   },
   reflection: {
-    title: 'Incomplete',
+    body: '', // Empty but valid type, but missing followUpQuestion
   },
   memoryUpdates: [
     {
@@ -64,7 +63,7 @@ const mockResponseWithUnknownProp = JSON.stringify({
     unknownField: 'something', // Unknown field
   },
   reflection: {
-    title: 'Reflection Title',
+    title: 'Reflection Title', // Now title is an unknown property!
     body: 'Reflection Body',
     followUpQuestion: 'Question?',
   },

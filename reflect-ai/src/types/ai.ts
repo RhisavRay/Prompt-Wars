@@ -57,10 +57,10 @@ export interface ArchiveMemory {
 }
 
 export interface AIReflection {
-  readonly title: string;
   readonly body: string;
   readonly followUpQuestion: string;
 }
+
 
 export interface MemoryUpdateOperation {
   readonly operation: MemoryUpdateAction;

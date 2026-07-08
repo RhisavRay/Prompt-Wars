@@ -235,7 +235,7 @@ export function validateGeminiResponse(rawResponse: string): ServiceValidationRe
       const reflectionObj = reflection as Record<string, unknown>;
       // Unknown properties check
       const reflectionKeys = Object.keys(reflectionObj);
-      const allowedReflectionKeys = ['title', 'body', 'followUpQuestion'];
+      const allowedReflectionKeys = ['body', 'followUpQuestion'];
       for (const key of reflectionKeys) {
         if (!allowedReflectionKeys.includes(key)) {
           errors.push(`Unknown property in reflection: "${key}".`);
@@ -243,17 +243,11 @@ export function validateGeminiResponse(rawResponse: string): ServiceValidationRe
       }
 
       // Required fields check
-      const requiredFields = ['title', 'body', 'followUpQuestion'];
+      const requiredFields = ['body', 'followUpQuestion'];
       for (const field of requiredFields) {
         if (!(field in reflectionObj)) {
           errors.push(`Missing required property in reflection: "${field}".`);
         }
-      }
-
-      if ('title' in reflectionObj && typeof reflectionObj.title !== 'string') {
-        errors.push('reflection.title must be a string.');
-      } else if (typeof reflectionObj.title === 'string' && reflectionObj.title.length > AI_CONSTANTS.maxReflectionTitleLength) {
-        errors.push(`reflection.title exceeds maximum length of ${AI_CONSTANTS.maxReflectionTitleLength} characters.`);
       }
 
       if ('body' in reflectionObj && typeof reflectionObj.body !== 'string') {
@@ -341,7 +335,6 @@ export function validateGeminiResponse(rawResponse: string): ServiceValidationRe
   }
 
   interface RawAIReflection {
-    title: string;
     body: string;
     followUpQuestion: string;
   }
@@ -379,7 +372,6 @@ export function validateGeminiResponse(rawResponse: string): ServiceValidationRe
       createdAt: journalMemory.createdAt ?? new Date().toISOString(),
     },
     reflection: {
-      title: reflection.title,
       body: reflection.body,
       followUpQuestion: reflection.followUpQuestion,
     },

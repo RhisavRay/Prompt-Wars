@@ -19,9 +19,9 @@ export type MemoryUpdateAction = (typeof SUPPORTED_MEMORY_OPERATIONS)[number];
 
 export const AI_CONSTANTS = {
   maxJournalSummaryLength: 200,
-  maxReflectionTitleLength: 100,
   maxReflectionBodyLength: 1000,
   maxReflectionFollowUpQuestionLength: 300,
   themeLimit: 5,
   observationLimit: 4,
 } as const;
+

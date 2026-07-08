@@ -89,10 +89,6 @@ export const GEMINI_RESPONSE_SCHEMA = {
       type: 'OBJECT',
       description: 'The mirroring reflection response to present to the user.',
       properties: {
-        title: {
-          type: 'STRING',
-          description: 'A gentle, reflective title for the reflection card.',
-        },
         body: {
           type: 'STRING',
           description: 'The core reflection text. Mirrors the user\'s thoughts with depth and emotional safety.',
@@ -102,7 +98,7 @@ export const GEMINI_RESPONSE_SCHEMA = {
           description: 'One thoughtful, open-ended question inviting further self-discovery.',
         },
       },
-      required: ['title', 'body', 'followUpQuestion'],
+      required: ['body', 'followUpQuestion'],
     },
     memoryUpdates: {
       type: 'ARRAY',

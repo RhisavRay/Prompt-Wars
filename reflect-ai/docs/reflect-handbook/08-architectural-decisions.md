@@ -457,7 +457,7 @@ During a user's early journaling history, Reflect should prioritise building an 
 
 As confidence in this understanding increases, memory updates gradually shift toward maintaining context and recognising meaningful long-term changes.
 
-The transition should be based on confidence rather than a fixed journal count.
+The transition should emerge naturally from the richness, consistency, and completeness of Active User Memory rather than relying on a fixed journal count or an explicit confidence score.
 
 ---
 
