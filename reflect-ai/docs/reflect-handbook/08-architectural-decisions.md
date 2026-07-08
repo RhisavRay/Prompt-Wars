@@ -354,7 +354,7 @@ Reflect will maintain multiple layers of AI memory, each serving a different pur
 
 Every journal generates its own structured AI memory object.
 
-This memory represents only that journal and remains immutable once generated.
+Journal Memory is immutable. Once generated, it represents Reflect's understanding of that journal at the time it was written. Future changes in the user's life do not alter historical Journal Memories.
 
 It may include:
 
