@@ -1,7 +1,7 @@
 # Sprint 04 — Reflection Experience
 
 **Sprint:** 04  
-**Status:** Planned  
+**Status:** In Progress
 **Priority:** High  
 **Estimated Duration:** 2–3 Weeks  
 **Last Updated:** 30 June 2026
@@ -56,7 +56,7 @@ Never certainty.
 
 ## Feature 1 — Reflection Cards
 
-**Status:** Not Started
+**Status:** In Progress
 
 Introduce dedicated Reflection Cards beneath completed journals.
 
