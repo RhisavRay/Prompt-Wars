@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# firebase admin
+reflect-ai-7a777-firebase-adminsdk-fbsvc-da7c9282ef.json
+
+# My learning path
+Learning.md

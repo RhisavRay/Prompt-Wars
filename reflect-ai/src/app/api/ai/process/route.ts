@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { initializeApp, getApps } from 'firebase-admin/app';
+import { cert, initializeApp, getApps } from "firebase-admin/app";
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { processNewJournal, processUpdatedJournal, processDeletedJournal } from '@/services/ai';
@@ -12,7 +12,14 @@ import type { ActiveUserMemory, JournalMemory, AIReflection } from '@/types/ai';
 // Only initialise once across hot reloads in development.
 if (!getApps().length) {
   initializeApp({
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'reflect-ai-7a777',
+    credential: cert({
+      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(
+        /\\n/g,
+        "\n"
+      ),
+    }),
   });
 }
 
