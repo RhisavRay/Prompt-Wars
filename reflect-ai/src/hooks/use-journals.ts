@@ -20,6 +20,7 @@ import {
   deleteJournal,
 } from '@/services/firebase/journal';
 import type { Journal, CreateJournalInput, UpdateJournalInput } from '@/types/journal';
+import { processNewJournal, processUpdatedJournal, processDeletedJournal } from '@/services/ai';
 
 interface UseJournalsReturn {
   journals: Journal[];
@@ -88,6 +89,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
       try {
         const newJournal = await createJournal(uid, input);
         setJournals((prev) => [newJournal, ...prev]);
+        void processNewJournal(uid, newJournal);
         return newJournal;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to create journal.';
@@ -108,6 +110,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
       try {
         const updated = await updateJournal(uid, journalId, input);
         setJournals((prev) => prev.map((j) => (j.id === journalId ? updated : j)));
+        void processUpdatedJournal(uid, updated);
         return updated;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to update journal.';
@@ -128,6 +131,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
       try {
         await deleteJournal(uid, journalId);
         setJournals((prev) => prev.filter((j) => j.id !== journalId));
+        void processDeletedJournal(uid, journalId);
         return true;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to delete journal.';

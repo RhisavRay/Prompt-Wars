@@ -134,3 +134,47 @@ export const GEMINI_RESPONSE_SCHEMA = {
   },
   required: ['journalMemory', 'reflection', 'memoryUpdates'],
 } as const;
+
+/**
+ * Structured Response Schema for Gemini Deletion
+ * Conforms to the @google/genai SDK Schema definition format.
+ * Defines the contract for the structured JSON response when a journal is deleted,
+ * containing only the proposed memory updates to remove or modify its contribution.
+ */
+export const GEMINI_DELETION_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    memoryUpdates: {
+      type: 'ARRAY',
+      description: 'Proposed operations to apply to Active User Memory to remove this deleted entry\'s contributions.',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          operation: {
+            type: 'STRING',
+            enum: [...SUPPORTED_MEMORY_OPERATIONS],
+            description: 'The type of change being proposed (usually "remove" or "archive" for deletion).',
+          },
+          target: {
+            type: 'STRING',
+            description: 'The category field in ActiveUserMemory being updated (e.g., "activeLifeEvents", "ongoingChallenges", "importantPeople", "recurringThemes", "behaviouralObservations", "communicationStyle", "stableFacts").',
+          },
+          payload: {
+            type: 'STRING',
+            description: 'The text value or data to remove, archive, or update.',
+          },
+          reason: {
+            type: 'STRING',
+            description: 'The specific clinical or reflective rationale for proposing this update.',
+          },
+          confidence: {
+            type: 'NUMBER',
+            description: 'The confidence score of this update (between 0.0 and 1.0).',
+          },
+        },
+        required: ['operation', 'target', 'payload', 'reason', 'confidence'],
+      },
+    },
+  },
+  required: ['memoryUpdates'],
+} as const;

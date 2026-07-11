@@ -10,6 +10,8 @@ export type Emotion =
   | 'uncertain'
   | 'overwhelmed';
 
+export type AIStatus = 'idle' | 'processing' | 'completed' | 'failed';
+
 export interface Journal {
   id: string;
   title: string;
@@ -26,6 +28,10 @@ export interface Journal {
   emotionalShift?: string | null;
   themes?: string[] | null;
   processedAt?: Date | null;
+  
+  // AI Status tracking
+  aiStatus?: AIStatus | null;
+  aiProcessedAt?: Date | null;
 }
 
 export interface CreateJournalInput {

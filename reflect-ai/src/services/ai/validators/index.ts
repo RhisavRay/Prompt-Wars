@@ -391,3 +391,126 @@ export function validateGeminiResponse(rawResponse: string): ServiceValidationRe
     errors: [],
   };
 }
+
+/**
+ * Validates whether a raw response string from Gemini deletion flow matches the expected schema.
+ *
+ * @param rawResponse - The raw JSON string returned by the model.
+ * @returns ServiceValidationResult containing the parsed and typed MemoryUpdateOperation[] or list of validation errors.
+ */
+export function validateDeletionResponse(rawResponse: string): ServiceValidationResult<MemoryUpdateOperation[]> {
+  const errors: string[] = [];
+  let parsed: unknown;
+
+  // 1. JSON Parsing
+  try {
+    parsed = JSON.parse(rawResponse);
+  } catch (err: unknown) {
+    return {
+      success: false,
+      errors: [`Invalid JSON format: ${err instanceof Error ? err.message : String(err)}`],
+    };
+  }
+
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+    return {
+      success: false,
+      errors: ['Response root must be an object.'],
+    };
+  }
+
+  const parsedObj = parsed as Record<string, unknown>;
+
+  // 2. Unknown properties at Root level
+  const rootKeys = Object.keys(parsedObj);
+  const allowedRootKeys = ['memoryUpdates'];
+  for (const key of rootKeys) {
+    if (!allowedRootKeys.includes(key)) {
+      errors.push(`Unknown property at response root: "${key}".`);
+    }
+  }
+
+  if (!('memoryUpdates' in parsedObj)) {
+    errors.push('Missing required property: "memoryUpdates".');
+  }
+
+  // 3. Validate memoryUpdates if present
+  if ('memoryUpdates' in parsedObj) {
+    const memoryUpdates = parsedObj.memoryUpdates;
+    if (!Array.isArray(memoryUpdates)) {
+      errors.push('Property "memoryUpdates" must be an array.');
+    } else {
+      const updatesArr = memoryUpdates as unknown[];
+      updatesArr.forEach((op: unknown, index: number) => {
+        if (typeof op !== 'object' || op === null || Array.isArray(op)) {
+          errors.push(`memoryUpdates[${index}] must be an object.`);
+        } else {
+          const opObj = op as Record<string, unknown>;
+          // Unknown properties check
+          const opKeys = Object.keys(opObj);
+          const allowedOpKeys = ['operation', 'target', 'payload', 'reason', 'confidence'];
+          for (const key of opKeys) {
+            if (!allowedOpKeys.includes(key)) {
+              errors.push(`Unknown property in memoryUpdates[${index}]: "${key}".`);
+            }
+          }
+
+          // Required fields check
+          const requiredFields = ['operation', 'target', 'payload', 'reason', 'confidence'];
+          for (const field of requiredFields) {
+            if (!(field in opObj)) {
+              errors.push(`Missing required property in memoryUpdates[${index}]: "${field}".`);
+            }
+          }
+
+          if ('operation' in opObj && !isMemoryUpdateAction(opObj.operation)) {
+            errors.push(`memoryUpdates[${index}].operation contains invalid value: "${opObj.operation}".`);
+          }
+
+          if ('target' in opObj && typeof opObj.target !== 'string') {
+            errors.push(`memoryUpdates[${index}].target must be a string.`);
+          }
+
+          if ('reason' in opObj && typeof opObj.reason !== 'string') {
+            errors.push(`memoryUpdates[${index}].reason must be a string.`);
+          }
+
+          if ('confidence' in opObj) {
+            if (typeof opObj.confidence !== 'number') {
+              errors.push(`memoryUpdates[${index}].confidence must be a number.`);
+            } else if (opObj.confidence < 0 || opObj.confidence > 1) {
+              errors.push(`memoryUpdates[${index}].confidence must be between 0.0 and 1.0.`);
+            }
+          }
+        }
+      });
+    }
+  }
+
+  if (errors.length > 0) {
+    return { success: false, errors };
+  }
+
+  interface RawMemoryUpdate {
+    operation: MemoryUpdateOperation['operation'];
+    target: string;
+    payload: unknown;
+    reason: string;
+    confidence: number;
+  }
+
+  const memoryUpdates = parsedObj.memoryUpdates as unknown as RawMemoryUpdate[];
+  const validatedUpdates: MemoryUpdateOperation[] = memoryUpdates.map((op) => ({
+    operation: op.operation,
+    target: op.target,
+    payload: op.payload,
+    reason: op.reason,
+    confidence: op.confidence,
+  }));
+
+  return {
+    success: true,
+    data: validatedUpdates,
+    errors: [],
+  };
+}

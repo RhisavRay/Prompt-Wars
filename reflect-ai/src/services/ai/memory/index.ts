@@ -17,3 +17,5 @@ export function createEmptyActiveUserMemory(): ActiveUserMemory {
     lastUpdated: new Date().toISOString(),
   };
 }
+
+export { applyMemoryUpdates } from './applyUpdates';

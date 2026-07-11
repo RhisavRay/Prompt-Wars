@@ -7,7 +7,7 @@
 export const AI_CONFIG = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    model: process.env.GEMINI_MODEL || 'gemini-flash-latest',
     temperature: parseFloat(process.env.GEMINI_TEMPERATURE || '0.2'),
     maxOutputTokens: parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS || '2048', 10),
     timeoutMs: parseInt(process.env.GEMINI_TIMEOUT_MS || '15000', 10),

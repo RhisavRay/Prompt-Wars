@@ -14,7 +14,7 @@ import {
   type DocumentData,
 } from 'firebase/firestore';
 import { db } from './client';
-import type { Journal, CreateJournalInput, UpdateJournalInput, Emotion } from '@/types/journal';
+import type { Journal, CreateJournalInput, UpdateJournalInput, Emotion, AIStatus } from '@/types/journal';
 
 /**
  * Maps a legacy mood string to the new Emotion type.
@@ -87,6 +87,10 @@ function mapDocToJournal(id: string, data: DocumentData): Journal {
     emotionalShift: data.emotionalShift ?? null,
     themes: data.themes ?? null,
     processedAt: data.processedAt instanceof Timestamp ? data.processedAt.toDate() : null,
+    
+    // AI Status tracking
+    aiStatus: data.aiStatus || 'idle',
+    aiProcessedAt: data.aiProcessedAt instanceof Timestamp ? data.aiProcessedAt.toDate() : null,
   };
 }
 
@@ -116,6 +120,8 @@ export async function createJournal(uid: string, input: CreateJournalInput): Pro
     initialCheckIn: input.initialCheckIn !== undefined ? input.initialCheckIn : null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
+    aiStatus: 'idle',
+    aiProcessedAt: null,
   };
 
   await setDoc(newJournalDocRef, newDocData);
@@ -128,6 +134,8 @@ export async function createJournal(uid: string, input: CreateJournalInput): Pro
     initialCheckIn: input.initialCheckIn !== undefined ? input.initialCheckIn : null,
     createdAt: new Date(),
     updatedAt: new Date(),
+    aiStatus: 'idle',
+    aiProcessedAt: null,
   };
 }
 
@@ -233,4 +241,29 @@ export async function deleteJournal(uid: string, journalId: string): Promise<voi
 
   const journalDocRef = doc(db, 'users', uid, 'journals', journalId);
   await deleteDoc(journalDocRef);
+}
+
+/**
+ * Updates the AI status and optional processed timestamp for a journal entry.
+ */
+export async function updateAIStatus(
+  uid: string,
+  journalId: string,
+  status: AIStatus,
+  processedAt: Date | null = null
+): Promise<void> {
+  if (!uid || !journalId) {
+    throw new Error('User ID and Journal ID are required to update AI status.');
+  }
+
+  const journalDocRef = doc(db, 'users', uid, 'journals', journalId);
+  const updateData: DocumentData = {
+    aiStatus: status,
+  };
+  
+  if (processedAt) {
+    updateData.aiProcessedAt = Timestamp.fromDate(processedAt);
+  }
+
+  await updateDoc(journalDocRef, updateData);
 }
