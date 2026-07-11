@@ -25,19 +25,20 @@ async function runAllTests() {
   const { orchestrationDeps, processNewJournal, processUpdatedJournal, processDeletedJournal } = await import('../src/services/ai/orchestration');
   const { applyMemoryUpdates } = await import('../src/services/ai/memory/applyUpdates');
   const { createEmptyActiveUserMemory } = await import('../src/services/ai/memory');
-  
-  type Journal = any;
-  type ActiveUserMemory = any;
-  type JournalMemory = any;
+  type Journal = import('../src/types/journal').Journal;
+  type ActiveUserMemory = import('../src/types/ai').ActiveUserMemory;
+  type JournalMemory = import('../src/types/ai').JournalMemory;
+  type AIReflection = import('../src/types/ai').AIReflection;
+  type AIStatus = import('../src/types/journal').AIStatus;
 
   // In-memory mock databases
   const journalsDb = new Map<string, Journal>();
   const journalMemoryDb = new Map<string, JournalMemory>();
-  const reflectionDb = new Map<string, any>();
+  const reflectionDb = new Map<string, AIReflection>();
   const activeUserMemoryDb = new Map<string, ActiveUserMemory>();
 
   // Overriding orchestrator dependencies with mock implementations
-  orchestrationDeps.updateAIStatus = async (uid: string, journalId: string, status: any, processedAt: Date | null = null) => {
+  orchestrationDeps.updateAIStatus = async (uid: string, journalId: string, status: AIStatus, processedAt: Date | null = null) => {
     console.log(`[MOCK updateAIStatus] uid: ${uid}, journalId: ${journalId}, status: ${status}, processedAt: ${processedAt}`);
     const journal = journalsDb.get(journalId);
     if (journal) {
@@ -80,7 +81,7 @@ async function runAllTests() {
     journalMemoryDb.set(journalId, memory);
   };
 
-  orchestrationDeps.saveReflection = async (uid: string, journalId: string, reflection: any) => {
+  orchestrationDeps.saveReflection = async (uid: string, journalId: string, reflection: AIReflection) => {
     console.log(`[MOCK saveReflection] uid: ${uid}, journalId: ${journalId}, reflection:`, reflection);
     reflectionDb.set(journalId, reflection);
   };
