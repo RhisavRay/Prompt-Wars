@@ -103,3 +103,28 @@ export async function deleteReflection(uid: string, journalId: string): Promise<
   const reflectionDocRef = doc(db, 'users', uid, 'journals', journalId, 'reflection', journalId);
   await deleteDoc(reflectionDocRef);
 }
+
+/**
+ * Retrieves the AIReflection for a journal entry from Firestore.
+ * Returns null if the reflection has not yet been generated.
+ *
+ * @param uid - The authenticated user's unique ID
+ * @param journalId - The journal entry ID
+ * @returns The AIReflection or null if not found
+ */
+export async function getReflection(
+  uid: string,
+  journalId: string
+): Promise<AIReflection | null> {
+  if (!uid || !journalId) {
+    throw new Error('User ID and Journal ID are required to fetch AI Reflection.');
+  }
+
+  const reflectionDocRef = doc(db, 'users', uid, 'journals', journalId, 'reflection', journalId);
+  const snapshot = await getDoc(reflectionDocRef);
+  if (!snapshot.exists()) {
+    return null;
+  }
+  return snapshot.data() as AIReflection;
+}
+

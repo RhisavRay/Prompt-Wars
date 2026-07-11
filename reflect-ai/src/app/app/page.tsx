@@ -326,6 +326,7 @@ export default function AppPage() {
                 <JournalCard
                   key={journal.id}
                   journal={journal}
+                  uid={user?.uid ?? ''}
                   isMutating={mutating === journal.id}
                   onEdit={openEdit}
                   onDelete={handleDelete}

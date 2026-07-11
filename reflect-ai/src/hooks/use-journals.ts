@@ -19,8 +19,8 @@ import {
   updateJournal,
   deleteJournal,
 } from '@/services/firebase/journal';
-import type { Journal, CreateJournalInput, UpdateJournalInput } from '@/types/journal';
-import { processNewJournal, processUpdatedJournal, processDeletedJournal } from '@/services/ai';
+import type { Journal, CreateJournalInput, UpdateJournalInput, AIStatus } from '@/types/journal';
+import { auth } from '@/services/firebase/client';
 
 interface UseJournalsReturn {
   journals: Journal[];
@@ -46,6 +46,70 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
 
   const clearError = useCallback(() => setError(null), []);
   const refresh = useCallback(() => setFetchTick((t) => t + 1), []);
+
+  const updateLocalAIStatus = useCallback((journalId: string, status: AIStatus) => {
+    setJournals((prev) =>
+      prev.map((j) => (j.id === journalId ? { ...j, aiStatus: status } : j))
+    );
+  }, []);
+
+  const triggerAiProcess = useCallback(
+    async (
+      action: 'new' | 'update' | 'delete',
+      journalId: string,
+      payload: { journal?: Journal }
+    ): Promise<void> => {
+      if (!uid) return;
+
+      // 1. Immediately transition local state to 'processing' (except for delete action)
+      if (action !== 'delete') {
+        updateLocalAIStatus(journalId, 'processing');
+      }
+
+      try {
+        const idToken = await auth.currentUser?.getIdToken();
+        if (!idToken) {
+          console.warn('[AI Trigger Warning]: User ID token is not available.');
+          if (action !== 'delete') {
+            updateLocalAIStatus(journalId, 'failed');
+          }
+          return;
+        }
+
+        const response = await fetch('/api/ai/process', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            action,
+            uid,
+            journal: payload.journal,
+            journalId,
+          }),
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `HTTP ${response.status}`);
+        }
+
+        const result = await response.json().catch(() => ({}));
+
+        // 2. Transition local state to the final status returned by the server
+        if (action !== 'delete' && result.aiStatus) {
+          updateLocalAIStatus(journalId, result.aiStatus);
+        }
+      } catch (err) {
+        console.error(`[AI Trigger ERROR] Failed to request server AI process (${action}):`, err);
+        if (action !== 'delete') {
+          updateLocalAIStatus(journalId, 'failed');
+        }
+      }
+    },
+    [uid, updateLocalAIStatus]
+  );
 
   useEffect(() => {
     if (!uid) return;
@@ -89,7 +153,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
       try {
         const newJournal = await createJournal(uid, input);
         setJournals((prev) => [newJournal, ...prev]);
-        void processNewJournal(uid, newJournal);
+        void triggerAiProcess('new', newJournal.id, { journal: newJournal });
         return newJournal;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to create journal.';
@@ -99,7 +163,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
         setCreating(false);
       }
     },
-    [uid]
+    [uid, triggerAiProcess]
   );
 
   const update = useCallback(
@@ -110,7 +174,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
       try {
         const updated = await updateJournal(uid, journalId, input);
         setJournals((prev) => prev.map((j) => (j.id === journalId ? updated : j)));
-        void processUpdatedJournal(uid, updated);
+        void triggerAiProcess('update', journalId, { journal: updated });
         return updated;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to update journal.';
@@ -120,7 +184,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
         setMutating(null);
       }
     },
-    [uid]
+    [uid, triggerAiProcess]
   );
 
   const remove = useCallback(
@@ -131,7 +195,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
       try {
         await deleteJournal(uid, journalId);
         setJournals((prev) => prev.filter((j) => j.id !== journalId));
-        void processDeletedJournal(uid, journalId);
+        void triggerAiProcess('delete', journalId, {});
         return true;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to delete journal.';
@@ -141,7 +205,7 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
         setMutating(null);
       }
     },
-    [uid]
+    [uid, triggerAiProcess]
   );
 
   return {
