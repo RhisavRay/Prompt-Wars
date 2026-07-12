@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { cert, initializeApp, getApps } from "firebase-admin/app";
+import { cert, initializeApp, getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { processNewJournal, processUpdatedJournal, processDeletedJournal } from '@/services/ai';
@@ -7,6 +7,11 @@ import { orchestrationDeps } from '@/services/ai/orchestration';
 import { createEmptyActiveUserMemory } from '@/services/ai';
 import type { Journal, AIStatus } from '@/types/journal';
 import type { ActiveUserMemory, JournalMemory, AIReflection } from '@/types/ai';
+
+// Lock this route to the Node.js runtime.
+// firebase-admin depends on Node.js-specific APIs (crypto, net, fs) and will
+// fail at startup if placed in the Edge Runtime.
+export const runtime = 'nodejs';
 
 // ─── Firebase Admin Initialization ───────────────────────────────────────────
 // Only initialise once across hot reloads in development.
