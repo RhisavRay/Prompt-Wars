@@ -8,8 +8,8 @@
  *
  * Strategy:
  * - When aiStatus === 'completed', fetches the reflection once and caches it.
- * - When aiStatus === 'processing', polls every POLL_INTERVAL_MS until the
- *   reflection document appears or the status changes.
+ * - When aiStatus === 'processing' or 'queued', polls every POLL_INTERVAL_MS until
+ *   the reflection document appears or the status changes.
  * - When aiStatus === 'idle' or 'failed', does nothing.
  *
  * Note: A future improvement is to replace polling with a Firestore real-time
@@ -89,7 +89,7 @@ export function useReflection(
         // One-time fetch
         setLoading(true);
         void fetchOnce();
-      } else if (aiStatus === 'processing') {
+      } else if (aiStatus === 'processing' || aiStatus === 'queued') {
         setLoading(true);
 
         let pollCount = 0;

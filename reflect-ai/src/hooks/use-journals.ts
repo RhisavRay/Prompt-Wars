@@ -61,9 +61,9 @@ export function useJournals(uid: string | null | undefined): UseJournalsReturn {
     ): Promise<void> => {
       if (!uid) return;
 
-      // 1. Immediately transition local state to 'processing' (except for delete action)
+      // 1. Immediately transition local state to 'queued' (except for delete action)
       if (action !== 'delete') {
-        updateLocalAIStatus(journalId, 'processing');
+        updateLocalAIStatus(journalId, 'queued');
       }
 
       try {

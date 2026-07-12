@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import { cert, initializeApp, getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
-import { processNewJournal, processUpdatedJournal, processDeletedJournal } from '@/services/ai';
 import { orchestrationDeps } from '@/services/ai/orchestration';
 import { createEmptyActiveUserMemory } from '@/services/ai';
+import { enqueueJob } from '@/services/ai/queue/aiQueueManager';
 import type { Journal, AIStatus } from '@/types/journal';
 import type { ActiveUserMemory, JournalMemory, AIReflection } from '@/types/ai';
 
@@ -219,51 +219,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden: UID mismatch' }, { status: 403 });
     }
 
-    // 4. Dispatch to orchestration service
-    let targetJournalId = journalId ?? '';
-
+    // 4. Enqueue the AI job — returns immediately; processing runs in the background.
     if (action === 'new') {
       if (!journal) {
         return NextResponse.json({ error: 'Bad Request: Missing journal' }, { status: 400 });
       }
-      targetJournalId = journal.id as string;
-      console.log(`[API /api/ai/process] Dispatching processNewJournal for ${targetJournalId}`);
-      await processNewJournal(uid, parseJournalDates(journal));
+      const parsedJournal = parseJournalDates(journal);
+      console.log(
+        `[API /api/ai/process] Enqueueing 'new' job for journalId=${parsedJournal.id}`
+      );
+      await enqueueJob({ uid, journalId: parsedJournal.id, action: 'new', journal: parsedJournal });
+      return NextResponse.json({ success: true, aiStatus: 'queued' });
+
     } else if (action === 'update') {
       if (!journal) {
         return NextResponse.json({ error: 'Bad Request: Missing journal' }, { status: 400 });
       }
-      targetJournalId = journal.id as string;
+      const parsedJournal = parseJournalDates(journal);
       console.log(
-        `[API /api/ai/process] Dispatching processUpdatedJournal for ${targetJournalId}`
+        `[API /api/ai/process] Enqueueing 'update' job for journalId=${parsedJournal.id}`
       );
-      await processUpdatedJournal(uid, parseJournalDates(journal));
+      await enqueueJob({ uid, journalId: parsedJournal.id, action: 'update', journal: parsedJournal });
+      return NextResponse.json({ success: true, aiStatus: 'queued' });
+
     } else if (action === 'delete') {
       if (!journalId) {
         return NextResponse.json({ error: 'Bad Request: Missing journalId' }, { status: 400 });
       }
       console.log(
-        `[API /api/ai/process] Dispatching processDeletedJournal for ${journalId}`
+        `[API /api/ai/process] Enqueueing 'delete' job for journalId=${journalId}`
       );
-      await processDeletedJournal(uid, journalId);
+      // Delete jobs do not write a 'queued' Firestore status (document is being removed).
+      await enqueueJob({ uid, journalId, action: 'delete' });
+      return NextResponse.json({ success: true });
+
     } else {
       console.warn(`[API /api/ai/process] 400: Invalid action "${action}"`);
-      return NextResponse.json({ error: `Bad Request: Invalid action "${action}"` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Bad Request: Invalid action "${action}"` },
+        { status: 400 }
+      );
     }
-
-    // 5. Return the final aiStatus to the client (Admin SDK read, no auth overhead)
-    let finalStatus: AIStatus = 'idle';
-    if (action !== 'delete') {
-      try {
-        const result = await orchestrationDeps.getJournal(uid, targetJournalId);
-        finalStatus = result.aiStatus ?? 'idle';
-        console.log(`[API /api/ai/process] Pipeline complete. Final aiStatus=${finalStatus}`);
-      } catch {
-        console.warn('[API /api/ai/process] Could not read final status; defaulting to idle');
-      }
-    }
-
-    return NextResponse.json({ success: true, aiStatus: finalStatus });
   } catch (error) {
     console.error('[API /api/ai/process] Unhandled error:', error);
     return NextResponse.json(

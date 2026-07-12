@@ -8,6 +8,7 @@
  *
  * States:
  *   idle / failed  → renders nothing
+ *   queued         → "Reflecting ☀️" with a continuously rotating Sun icon
  *   processing     → "Reflecting ☀️" with a continuously rotating Sun icon
  *                    (dev-only: shows retry count, e.g. "Reflecting (2) ☀️")
  *   completed      → fades out the Sun, fades in the "Reflect" button
@@ -35,8 +36,11 @@ export function ReflectionIndicator({
 }: ReflectionIndicatorProps) {
   // Completed state: reflection fetched and ready
   const showReflectButton = aiStatus === 'completed' && hasReflection;
-  // Processing state: AI is working
-  const showProcessing = aiStatus === 'processing' || (aiStatus === 'completed' && !hasReflection);
+  // Processing state: AI is queued or actively working
+  const showProcessing =
+    aiStatus === 'queued' ||
+    aiStatus === 'processing' ||
+    (aiStatus === 'completed' && !hasReflection);
 
   const isDev = process.env.NODE_ENV === 'development';
   const reflectBtnId = useId();

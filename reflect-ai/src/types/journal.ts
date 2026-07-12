@@ -10,7 +10,13 @@ export type Emotion =
   | 'uncertain'
   | 'overwhelmed';
 
-export type AIStatus = 'idle' | 'processing' | 'completed' | 'failed';
+export type AIStatus =
+  | 'idle'
+  | 'queued'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  | 'waiting_retry'; // reserved — not used until a future milestone
 
 export interface Journal {
   id: string;
